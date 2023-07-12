@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/obj
+/bin
+/DataModels/obj
+/DataModels/bin/Debug/net6.0
+/MCM.Web/obj
+/MCM.Web/bin/Debug/net6.0
+/.vs

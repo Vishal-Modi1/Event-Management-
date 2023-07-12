@@ -1,0 +1,97 @@
+﻿@using System.Linq.Expressions
+
+@if (!string.IsNullOrEmpty(Label) && string.IsNullOrEmpty(PlaceHolder))
+{
+    <CustomControlLabel>@Label</CustomControlLabel>
+}
+@if (string.IsNullOrEmpty(PlaceHolder))
+{
+    if (SelectedValues is not null && SelectedValues.Any())
+    {
+        <MudSelect Disabled=@Disabled OpenIcon="@Icons.Filled.ExpandMore" data-tc-auto="@TestDataAttribute" MultiSelection="@MultiSelection" @bind-SelectedValues="SelectedValues" CloseIcon="@Icons.Filled.ExpandLess" Variant="@Variant" Class="@Class" T="string" AnchorOrigin="Origin.BottomCenter" ValueChanged="@ValueChangeHandler" For="@For">
+            @MudSelectItems
+        </MudSelect>
+    }
+    else
+    {
+        <MudSelect Disabled=@Disabled OpenIcon="@Icons.Filled.ExpandMore" data-tc-auto="@TestDataAttribute" SelectedValuesChanged="@SelectedValuesChanged" MultiSelection="@MultiSelection" CloseIcon="@Icons.Filled.ExpandLess" Variant="@Variant" Class="@Class" T="string" AnchorOrigin="Origin.BottomCenter" Value="@Value" ValueChanged="@ValueChangeHandler" For="@For">
+            @MudSelectItems
+        </MudSelect>
+    }
+}
+else
+{
+    if (SelectedValues is not null && SelectedValues.Any())
+    {
+        <MudSelect Disabled=@Disabled OpenIcon="@Icons.Filled.ExpandMore" data-tc-auto="@TestDataAttribute" MultiSelection="@MultiSelection" @bind-SelectedValues="SelectedValues" CloseIcon="@Icons.Filled.ExpandLess" Variant="@Variant" Class="@Class" T="string" Label="@PlaceHolder" AnchorOrigin="Origin.BottomCenter" ValueChanged="@ValueChangeHandler" For="@For">
+            @MudSelectItems
+        </MudSelect>
+    }
+    else
+    {
+        <MudSelect Disabled=@Disabled OpenIcon="@Icons.Filled.ExpandMore" data-tc-auto="@TestDataAttribute" MultiSelection="@MultiSelection" SelectedValuesChanged="@SelectedValuesChanged" CloseIcon="@Icons.Filled.ExpandLess" Variant="@Variant" Class="@Class" T="string" Label="@PlaceHolder" AnchorOrigin="Origin.BottomCenter" Value="@Value" ValueChanged="@ValueChangeHandler" For="@For">
+            @MudSelectItems
+        </MudSelect>
+    }
+}
+@code {
+
+    [Parameter]
+    public string Value { get; set; }
+
+    /// <summary>
+    /// Gets or sets the event callback when the values is changed.
+    /// </summary>
+    /// <value>Event callback.</value>
+    [Parameter]
+    public EventCallback<string> ValueChangedCallBack { get; set; }
+
+    [Parameter]
+    public RenderFragment MudSelectItems { get; set; }
+
+    [Parameter]
+    public Variant Variant { get; set; }
+
+    [Parameter]
+    public bool MultiSelection { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public Expression<System.Func<string>> For { get; set; }
+
+    [Parameter]
+    public EventCallback<IEnumerable<string>> SelectedValuesChanged { get; set; }
+
+    [Parameter]
+    public string Class { get; set; }
+
+    [Parameter]
+    public string TestDataAttribute { get; set; } = "-";
+
+    [Parameter]
+    public string Label { get; set; }
+
+    [Parameter]
+    public string PlaceHolder { get; set; }
+
+    [Parameter]
+    public IEnumerable<string> SelectedValues { get; set; }
+
+    private void ValueChangeHandler(string value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            Value = value.Trim().Replace("  ", " ");
+            ValueChangedCallBack.InvokeAsync(value.Trim().Replace("  ", " "));
+            return;
+        }
+        else
+        {
+            Value = string.Empty;
+            ValueChangedCallBack.InvokeAsync(string.Empty);
+            return;
+        }
+    }
+}

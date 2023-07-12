@@ -1,0 +1,55 @@
+﻿@using DataModels
+<MudForm Model="@venueModel">   
+    <MudDialog @bind-IsVisible="visible">
+        <DialogContent>
+            <MudContainer>
+                <MudGrid>
+
+                    <MudItem lg="6" md="6" xs="12">
+                        <MudTextField @bind-Value="venueModel.name" Label="Name" Variant="Variant.Outlined" For="@(() => venueModel.name)"></MudTextField>
+
+                    </MudItem>
+                    <MudItem lg="6" md="6" xs="12">
+
+                        <MudTextField @bind-Value="venueModel.phone" Label="Phone" Variant="Variant.Outlined" For="@(() => venueModel.phone)"></MudTextField>
+
+                    </MudItem>
+                    <MudItem lg="6" md="6" xs="12">
+                        <MudTextField @bind-Value="venueModel.url" Label="Url" Variant="Variant.Outlined" For="@(() => venueModel.url)"></MudTextField>
+                    </MudItem>
+                    <MudItem lg="6" md="6" xs="12">
+                        <MudTextField T="string" Class="m-0" Label="Address" Variant="Variant.Outlined" @bind-Text="venueModel.address" Lines="5" />
+
+                    </MudItem>
+                   
+                    <MudItem lg="6" md="6" xs="12">
+                        <MudText>
+                            Photos(5):
+
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.TwoTone.Add" Size="Size.Small">
+                                <FontLabel Fontweight="500" FontColor="white">Add</FontLabel>
+                            </MudButton>
+                        </MudText>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudImage Src="https://mudblazor.com/images/sweden.jpg" Height="100" Width="100" Alt="Mony the dog" Elevation="25" Class="rounded-lg" />
+                        <MudImage Src="https://mudblazor.com/images/sweden.jpg" Height="100" Width="100" Alt="Mony the dog" Elevation="25" Class="rounded-lg" />
+                        <MudImage Src="https://mudblazor.com/images/sweden.jpg" Height="100" Width="100" Alt="Mony the dog" Elevation="25" Class="rounded-lg" />
+                        <MudImage Src="https://mudblazor.com/images/sweden.jpg" Height="100" Width="100" Alt="Mony the dog" Elevation="25" Class="rounded-lg" />
+                        <MudImage Src="https://mudblazor.com/images/sweden.jpg" Height="100" Width="100" Alt="Mony the dog" Elevation="25" Class="rounded-lg" />
+                    </MudItem>
+                    <MudItem Class="d-flex justify-end my-2" xs="12">
+                        <MudButton Color="Color.Primary" ButtonType="ButtonType.Submit" Variant="Variant.Filled">Add</MudButton>
+
+                    </MudItem>
+                </MudGrid>
+            </MudContainer>
+        </DialogContent>
+    </MudDialog>
+</MudForm>
+@code {
+
+    private Venue venueModel = new();
+    private bool visible;
+    private void Close() => visible = false;
+}

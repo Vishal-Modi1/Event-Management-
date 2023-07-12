@@ -1,0 +1,41 @@
+﻿@page "/events"
+@using DataModels;
+@using Service;
+@using System.Net.Http.Json
+
+@inject IDialogService DialogService
+<MudBreadcrumbs Items="_items"></MudBreadcrumbs>
+<MudItem Class="d-flex justify-end my-2">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.TwoTone.Add" Size="Size.Small" @onclick="OpenDialogAdd">
+        <FontLabel Fontweight="500" FontColor="white">Add</FontLabel>
+    </MudButton>
+</MudItem>
+<MudTable Items="@Events" Dense="true" Hover="true" Striped="true" Filter="new Func<Event,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh></MudTh>
+        <MudTh>id</MudTh>
+        <MudTh>name</MudTh>
+        <MudTh>description</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>
+            <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small"
+                           @onclick="@(() => OpenDialog(context))">
+                edit
+            </MudIconButton>
+            @*@onclick="@(() => Delete(context))"*@
+            <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+        </MudTd>
+        <MudTd DataLabel="id">@context.id</MudTd>
+        <MudTd DataLabel="name">@context.name</MudTd>
+        <MudTd DataLabel="description">@context.description</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
