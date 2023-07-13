@@ -9,3 +9,9 @@
 /MCM.Web/obj
 /MCM.Web/bin/Debug/net6.0
 /.vs
+/MCMWEB/Shared/obj
+/MCMWEB/Shared/bin/Debug/net6.0
+/MCMWEB/Server/bin/Debug/net6.0
+/MCMWEB/Client/obj
+/MCMWEB/Client/bin/Debug/net6.0
+/MCMWEB/Server/obj
