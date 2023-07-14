@@ -1,0 +1,69 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.15" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.15" PrivateAssets="all" />
+    <PackageReference Include="MudBlazor" Version="6.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataModel\MCMWebApp.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Pages\Index.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Shared\MainLayout.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Shared\NavMenu.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\Common\CustomControlLabel\CustomControlLabel.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Shared\Common\Confirm.razor" />
+    <_ContentIncludedByDefault Remove="Shared\Common\CustomControlLabel\CustomControlLabel.razor" />
+    <_ContentIncludedByDefault Remove="Shared\Common\CustomMudDate\CustomMudDate.razor" />
+    <_ContentIncludedByDefault Remove="Shared\Common\CustomMudDialog\CustomMudDialog.razor" />
+    <_ContentIncludedByDefault Remove="Shared\Common\CustomMudDialog\CustomMudDialogTitle.razor" />
+    <_ContentIncludedByDefault Remove="Shared\Common\CustomMudTextField\CustomMudTextField.razor" />
+    <_ContentIncludedByDefault Remove="Shared\Common\FontLabel\FontLabel.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\Common\CustomMudDate\CustomMudDate.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\Common\CustomMudDialog\CustomMudDialog.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\Common\CustomMudDialog\CustomMudDialogTitle.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\Common\CustomMudTextField\CustomMudTextField.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\Common\FontLabel\FontLabel.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\Common\Confirm.razor" />
+  </ItemGroup>
+
+</Project>

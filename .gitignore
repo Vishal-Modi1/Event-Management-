@@ -15,3 +15,9 @@
 /MCMWEB/Client/obj
 /MCMWEB/Client/bin/Debug/net6.0
 /MCMWEB/Server/obj
+/DataModel/obj
+/DataModel/bin/Debug/net6.0
+/MCMWebApp/obj
+/MCMWebApp/bin/Debug/net6.0
+/MCMWebApp.Model/bin/Debug/net6.0
+/MCMWebApp.Model/obj

@@ -1,0 +1,43 @@
+﻿<EditForm Model="@venueModel">
+    <DataAnnotationsValidator />
+    <MudDialog @bind-IsVisible="visible">
+        <DialogContent>
+            <MudContainer>
+                <MudGrid>
+                    <MudItem lg="6" md="6" xs="12">
+                        <MudTextField @bind-Value="venueModel.name" Label="Name" Variant="Variant.Outlined" For="@(() => venueModel.name)"></MudTextField>
+                    </MudItem>
+                    <MudItem lg="6" md="6" xs="12">
+                        <MudTextField @bind-Value="venueModel.phone" Label="Phone" Variant="Variant.Outlined" For="@(() => venueModel.phone)"></MudTextField>
+                    </MudItem>
+                    <MudItem lg="6" md="6" xs="12">
+                        <MudTextField @bind-Value="venueModel.url" Label="Url" Variant="Variant.Outlined" For="@(() => venueModel.url)"></MudTextField>
+                    </MudItem>
+                    <MudItem lg="6" md="6" xs="12">
+                        <MudTextField T="string" Class="m-0" Label="Address" Variant="Variant.Outlined" @bind-Text="venueModel.address" Lines="5" />
+                    </MudItem>
+                    <MudItem lg="6" md="6" xs="12">
+                        <MudItem lg="12" md="12" xs="12">
+                            <MudText>
+                                Photos(5):
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small">
+                                    <FontLabel Fontweight="500" FontColor="white">Add</FontLabel>
+                                </MudButton>
+                            </MudText>
+                        </MudItem>
+                        <MudItem lg="12" md="12" xs="12" Class="py-2">
+                            <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
+                            <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
+                            <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
+                            <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
+                            <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
+                        </MudItem>
+                    </MudItem>
+                    <MudItem Class="d-flex justify-end my-2" xs="12">
+                        <MudButton Color="Color.Primary" ButtonType="ButtonType.Submit" Variant="Variant.Filled">Update</MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudContainer>
+        </DialogContent>
+    </MudDialog>
+</EditForm>
