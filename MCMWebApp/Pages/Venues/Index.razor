@@ -26,7 +26,7 @@
                            @onclick="@(() => OpenEditDialog(context))">
                 edit
             </MudIconButton>
-            <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" @onclick="DeleteUser(context)" />
+            <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" @onclick="@(() => Delete(context))" />
         </MudTd>
         <MudTd DataLabel="id">@context.id</MudTd>
         <MudTd DataLabel="name">@context.name</MudTd>

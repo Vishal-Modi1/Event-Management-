@@ -115,7 +115,7 @@ namespace MCMWebApp.Pages.Venues
             }
         }
         
-        private void DeleteUser(Venue venuedata)
+        private void Delete(Venue venuedata)
         {
             try
             {
