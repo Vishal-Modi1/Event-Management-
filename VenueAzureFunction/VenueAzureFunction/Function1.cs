@@ -15,6 +15,7 @@ using Microsoft.Azure.Cosmos;
 using DataModels;
 using Microsoft.Extensions.Configuration;
 using Container = Microsoft.Azure.Cosmos.Container;
+using System.Configuration;
 
 namespace VenueAzureFunction
 {
@@ -56,6 +57,7 @@ namespace VenueAzureFunction
                 venueData = JsonConvert.DeserializeObject<Venue>(requestBody);
                 var container = ContainerClient();
                 venueData.id = Guid.NewGuid().ToString();
+                venueData.isActive = true;
                 ItemResponse<Venue> venueResponse = await container.CreateItemAsync<Venue>(venueData, new Microsoft.Azure.Cosmos.PartitionKey(venueData.id));
             }
             catch (Exception ex)
@@ -75,10 +77,21 @@ namespace VenueAzureFunction
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "venue")] HttpRequest req, ILogger log)
         {
             List<Venue> venues = new List<Venue>();
+
+            //        var data = ConfigurationManager.AppSettings["Values"];
+            //        var data1 = ConfigurationManager.AppSettings["CosmosDB_DBName"];
+
+            //        var config = new ConfigurationBuilder()
+            //.SetBasePath(AppContext.BaseDirectory)
+            //.AddJsonFile("local.settings.json", optional: false, reloadOnChange: true)
+            //.AddEnvironmentVariables()
+            //.Build();
+
+
             try
             {
                 var container = ContainerClient();
-                var sqlQuery = "SELECT * FROM Venue";
+                var sqlQuery = "SELECT * FROM Venue as v WHERE v.isActive = true";
                 QueryDefinition queryDefinition = new QueryDefinition(sqlQuery);
                 FeedIterator<Venue> queryResultSetIterator = container.GetItemQueryIterator<Venue>(queryDefinition);
 
@@ -157,7 +170,7 @@ namespace VenueAzureFunction
                     var venueItem = res.Resource;
                     if (venueItem != null && venueItem.id != Guid.Empty.ToString())
                     {
-                        venueItem.IsActive = false;
+                        venueItem.isActive = false;
                         var updateRes = await container.ReplaceItemAsync(venueItem, id, new Microsoft.Azure.Cosmos.PartitionKey(id));
                     }
                     else
@@ -204,7 +217,7 @@ namespace VenueAzureFunction
                     venueItem.url = venueData.url;
                     venueItem.address = venueData.address;
                     venueItem.photos = venueData.photos;
-                    venueItem.IsActive = venueData.IsActive;
+                    venueItem.isActive = venueData.isActive;
                     var updateRes = await container.ReplaceItemAsync(venueItem, venueData.id, new Microsoft.Azure.Cosmos.PartitionKey(venueData.id));
                 }
                 else
