@@ -26,6 +26,26 @@
         get;
         set;
     }
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    [Parameter]
+    public string DeleteModelId { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnSubmit { get; set; }
+
+    void Submit()
+    {
+        if (string.IsNullOrEmpty(DeleteModelId))
+        {
+            OnSubmit.InvokeAsync("");
+        }
+        else
+        {
+            OnSubmit.InvokeAsync(DeleteModelId);
+        }
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
     void Cancel() => MudDialog.Cancel();
 }

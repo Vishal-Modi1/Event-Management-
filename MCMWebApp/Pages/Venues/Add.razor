@@ -1,20 +1,21 @@
-﻿<MudForm Model="@venueModel">   
+﻿<EditForm Model="@createModel" OnValidSubmit="ValidSubmit">
+    <DataAnnotationsValidator />
     <MudDialog @bind-IsVisible="visible">
         <DialogContent>
             <MudContainer>
                 <MudGrid>
 
                     <MudItem lg="6" md="6" xs="12">
-                        <MudTextField @bind-Value="venueModel.name" Label="Name" Variant="Variant.Outlined" For="@(() => venueModel.name)"></MudTextField>
+                        <MudTextField @bind-Value="createModel.name" Label="Name" Variant="Variant.Outlined" For="@(() => createModel.name)"></MudTextField>
                     </MudItem>
                     <MudItem lg="6" md="6" xs="12">
-                        <MudTextField @bind-Value="venueModel.phone" Label="Phone" Variant="Variant.Outlined" For="@(() => venueModel.phone)"></MudTextField>
+                        <MudTextField @bind-Value="createModel.phone" Label="Phone" Variant="Variant.Outlined" For="@(() => createModel.phone)"></MudTextField>
                     </MudItem>
                     <MudItem lg="6" md="6" xs="12">
-                        <MudTextField @bind-Value="venueModel.url" Label="Url" Variant="Variant.Outlined" For="@(() => venueModel.url)"></MudTextField>
+                        <MudTextField @bind-Value="createModel.url" Label="Url" Variant="Variant.Outlined" For="@(() => createModel.url)"></MudTextField>
                     </MudItem>
                     <MudItem lg="6" md="6" xs="12">
-                        <MudTextField T="string" Class="m-0" Label="Address" Variant="Variant.Outlined" @bind-Text="venueModel.address" Lines="5" />
+                        <MudTextField T="string" Class="m-0" Label="Address" Variant="Variant.Outlined" @bind-Text="createModel.address" Lines="5" />
                     </MudItem>
                     <MudItem lg="6" md="6" xs="12">
                         <MudItem lg="12" md="12" xs="12">
@@ -40,4 +41,4 @@
             </MudContainer>
         </DialogContent>
     </MudDialog>
-</MudForm>
+</EditForm>

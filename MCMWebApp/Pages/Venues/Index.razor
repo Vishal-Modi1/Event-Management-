@@ -23,10 +23,10 @@
     <RowTemplate>
         <MudTd>
             <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small"
-                           @onclick="@(() => OpenDialog(context))">
+                           @onclick="@(() => OpenEditDialog(context))">
                 edit
             </MudIconButton>
-            <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" @onclick="DeleteUser" />
+            <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" @onclick="DeleteUser(context)" />
         </MudTd>
         <MudTd DataLabel="id">@context.id</MudTd>
         <MudTd DataLabel="name">@context.name</MudTd>
