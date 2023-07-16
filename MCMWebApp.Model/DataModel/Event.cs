@@ -12,7 +12,7 @@ namespace MCMWebApp.Model.DataModel
         public TimeSpan? timeopen { get; set; }
         public TimeSpan? timeclose { get; set; }
 
-        [MaxLength(30)]
+        [MaxLength(500)]
         public string description { get; set; }
         public List<string> photos { get; set; }
         public string type { get; set; }
