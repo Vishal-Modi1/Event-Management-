@@ -1,6 +1,5 @@
 ﻿@page "/venues"
 @using MCMWebApp.Model.DataModel;
-@inject IDialogService DialogService
 
 <MudBreadcrumbs Items="_items"></MudBreadcrumbs>
 <MudItem Class="d-flex justify-end my-2">
@@ -24,7 +23,6 @@
         <MudTd>
             <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small"
                            @onclick="@(() => OpenEditDialog(context))">
-                edit
             </MudIconButton>
             <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" @onclick="@(() => Delete(context))" />
         </MudTd>

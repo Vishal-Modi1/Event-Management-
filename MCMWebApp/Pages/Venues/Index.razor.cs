@@ -3,6 +3,7 @@ using MCMWebApp.Model.DataModel;
 using MCMWebApp.Shared.Common;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using System;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -19,6 +20,8 @@ namespace MCMWebApp.Pages.Venues
         IDialogReference dialogresult;
         [Inject] HttpClient HttpClient { get; set; }
         [Inject] ISnackbar Snackbar { get; set; }
+        [Inject] IDialogService DialogService { get; set; }
+
 
         private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
         {

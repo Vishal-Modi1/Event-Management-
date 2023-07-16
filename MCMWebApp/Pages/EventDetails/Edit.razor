@@ -1,32 +1,32 @@
-﻿<EditForm Model="@eventModel">
+﻿<EditForm Model="@EditModel" OnValidSubmit="ValidSubmit">
     <DataAnnotationsValidator />
-    <MudDialog @bind-IsVisible="visible">
+    <MudDialog >
         <DialogContent>
             <MudContainer>
                 <MudGrid>
                     <MudItem lg="6" md="6" xs="12">
-                        <MudTextField @bind-Value="eventModel.name" Label="Name" Variant="Variant.Outlined" For="@(() => eventModel.name)"></MudTextField>
+                        <MudTextField @bind-Value="EditModel.name" Label="Name" Variant="Variant.Outlined" For="@(() => EditModel.name)"></MudTextField>
                     </MudItem>
                     <MudItem lg="6" md="6" xs="12">
-                        <MudTextField @bind-Value="eventModel.type" Label="Event Type" Variant="Variant.Outlined" For="@(() => eventModel.type)"></MudTextField>
+                        <MudTextField @bind-Value="EditModel.type" Label="Event Type" Variant="Variant.Outlined" For="@(() => EditModel.type)"></MudTextField>
                     </MudItem>
                     <MudItem lg="4" md="4" xs="4">
-                        <MudDatePicker Label="Date" @bind-Date="eventModel.date" DateFormat="dd.MM.yyyy" PickerVariant="PickerVariant.Dialog" />
+                        <MudDatePicker Label="Date" @bind-Date="EditModel.date" DateFormat="dd.MM.yyyy" PickerVariant="PickerVariant.Dialog" />
                     </MudItem>
                     <MudItem lg="4" md="4" xs="4">
-                        <MudTimePicker Label="Time open" AmPm="true" @bind-Time="eventModel.timeopen" PickerVariant="PickerVariant.Dialog" />
+                        <MudTimePicker Label="Time open" AmPm="true" @bind-Time="EditModel.timeopen" PickerVariant="PickerVariant.Dialog" />
                     </MudItem>
                     <MudItem lg="4" md="4" xs="4">
-                        <MudTimePicker Label="Time close" AmPm="true" @bind-Time="eventModel.timecolse" PickerVariant="PickerVariant.Dialog" />
+                        <MudTimePicker Label="Time close" AmPm="true" @bind-Time="EditModel.timeclose" PickerVariant="PickerVariant.Dialog" />
                     </MudItem>
                     <MudItem lg="3" md="3" xs="6">
-                        <MudTextField @bind-Value="eventModel.state" Label="State" Variant="Variant.Outlined" For="@(() => eventModel.state)"></MudTextField>
+                        <MudTextField @bind-Value="EditModel.state" Label="State" Variant="Variant.Outlined" For="@(() => EditModel.state)"></MudTextField>
                     </MudItem>
                     <MudItem lg="3" md="3" xs="6">
-                        <MudTextField @bind-Value="eventModel.genere" Label="Genere" Variant="Variant.Outlined" For="@(() => eventModel.genere)"></MudTextField>
+                        <MudTextField @bind-Value="EditModel.genere" Label="Genere" Variant="Variant.Outlined" For="@(() => EditModel.genere)"></MudTextField>
                     </MudItem>
                     <MudItem lg="6" md="6" xs="12">
-                        <MudTextField T="string" Class="m-0" Label="Description" Variant="Variant.Outlined" @bind-Text="eventModel.description" Lines="5" />
+                        <MudTextField T="string" Class="m-0" Label="Description" Variant="Variant.Outlined" @bind-Text="EditModel.description" Lines="5" />
                     </MudItem>                  
                     <MudItem lg="6" md="6" xs="12">
                         <MudItem lg="12" md="12" xs="12">
@@ -46,7 +46,18 @@
                         </MudItem>
                     </MudItem>
                     <MudItem Class="d-flex justify-end my-2" xs="12">
-                        <MudButton Color="Color.Primary" ButtonType="ButtonType.Submit" Variant="Variant.Filled">Update</MudButton>
+                        <MudButton Color="Color.Primary" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Disabled="isDisabled">
+                            @if (isDisabled)
+                            {
+                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                <MudText Class="ms-2">Processing</MudText>
+                            }
+                            else
+                            {
+                                <MudText Class="ms-2">Update</MudText>
+                                
+                            }
+                        </MudButton>
                     </MudItem>
                 </MudGrid>
             </MudContainer>

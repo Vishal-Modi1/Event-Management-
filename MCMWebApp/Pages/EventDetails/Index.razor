@@ -1,6 +1,6 @@
 ﻿@page "/events"
 @using MCMWebApp.Model.DataModel;
-@inject IDialogService DialogService
+
 <MudBreadcrumbs Items="_items"></MudBreadcrumbs>
 <MudItem Class="d-flex justify-end my-2">
     <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small" @onclick="OpenDialogAdd">
@@ -22,11 +22,11 @@
     <RowTemplate>
         <MudTd>
             <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small"
-                           @onclick="@(() => OpenDialog(context))">
+                           @onclick="@(() => OpenEditDialog(context))">
                 edit
             </MudIconButton>
             @*@onclick="@(() => Delete(context))"*@
-            <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" @onclick="DeleteUser" />
+            <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" @onclick="@(() => Delete(context))" />
         </MudTd>
         <MudTd DataLabel="id">@context.id</MudTd>
         <MudTd DataLabel="name">@context.name</MudTd>

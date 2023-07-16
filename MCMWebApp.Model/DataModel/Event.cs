@@ -10,7 +10,7 @@ namespace MCMWebApp.Model.DataModel
         public DateTime? date { get; set; } = DateTime.Today;
 
         public TimeSpan? timeopen { get; set; }
-        public TimeSpan? timecolse { get; set; }
+        public TimeSpan? timeclose { get; set; }
 
         [MaxLength(30)]
         public string description { get; set; }
@@ -18,9 +18,8 @@ namespace MCMWebApp.Model.DataModel
         public string type { get; set; }
         public string state { get; set; }
         public string genere { get; set; }
-
-        [ForeignKey("id")]
-        public Venue venue { get; set; }
+        public bool isActive { get; set; }
+        public string venueid { get; set; }
 
     }
 }

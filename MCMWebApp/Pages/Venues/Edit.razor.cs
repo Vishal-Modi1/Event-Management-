@@ -13,10 +13,17 @@ namespace MCMWebApp.Pages.Venues
         [Parameter]
         public EventCallback<Venue> OnValidSubmit { get; set; }
         [Inject] ISnackbar Snackbar { get; set; }
+        public bool isDisabled { get; set; } = false;
+        protected override void OnInitialized()
+        {
+            isDisabled = false;
+            base.OnInitialized();
+        }
         private void ValidSubmit() 
         {
             try
             {
+                isDisabled = true;
                 OnValidSubmit.InvokeAsync(EditModel);
             }
             catch (Exception ex)
