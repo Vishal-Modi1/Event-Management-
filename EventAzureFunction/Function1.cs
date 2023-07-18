@@ -63,12 +63,12 @@ namespace EventAzureFunction
                 eventData.createModel.isActive = true;
                 var attachments = eventData.attachmentModels;
                 ItemResponse<Event> eventResponse = await container.CreateItemAsync<Event>(eventData.createModel, new Microsoft.Azure.Cosmos.PartitionKey(eventData.createModel.id));
-           
-                if(eventResponse.StatusCode == HttpStatusCode.Created)
+
+                if (eventResponse.StatusCode == HttpStatusCode.Created)
                 {
                     await UploadFile(eventData.createModel.id, attachments);
                 }
-            
+
             }
             catch (Exception ex)
             {
@@ -78,6 +78,78 @@ namespace EventAzureFunction
 
             return new OkObjectResult(eventData);
         }
+
+        [FunctionName("put")]
+        [OpenApiOperation(operationId: "put", tags: new[] { "Update Record operation" })]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventViewModel), Description = "Parameters", Required = true)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(Event), Description = "Returns a 200 response with text")]
+        public async Task<IActionResult> Update(
+      [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "event")] HttpRequest req, ILogger log)
+        {
+            EventViewModel eventViewModelData = new();
+            eventViewModelData.createModel = new Event();
+            try
+            {
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                eventViewModelData = JsonConvert.DeserializeObject<EventViewModel>(requestBody);
+
+                var eventData = eventViewModelData.createModel;
+                var container = ContainerClient();
+
+                var attachments = eventViewModelData.attachmentModels;
+                ItemResponse<Event> res = await container.ReadItemAsync<Event>(eventData.id, new Microsoft.Azure.Cosmos.PartitionKey(eventData.id));
+                //Get Existing Item
+                var eventItem = res.Resource;
+                if (eventItem != null && eventItem.id != Guid.Empty.ToString())
+                {
+                    //Replace existing item values with new values
+                    eventItem.name = eventData.name;
+                    eventItem.date = eventData.date;
+                    eventItem.timeopen = eventData.timeopen;
+                    eventItem.timeclose = eventData.timeclose;
+                    eventItem.description = eventData.description;
+
+                    if (eventData.photos != null)
+                    {
+                        eventItem.photos = new List<string>();
+                        for (int i = 0; i < eventData.photos.Count; i++)
+                        {
+                            eventItem.photos.Add(System.IO.Path.GetFileName(eventData.photos[i]));
+                        }
+
+                    }
+
+                    eventItem.type = eventData.type;
+                    eventItem.state = eventData.state;
+                    eventItem.genere = eventData.genere;
+                    eventItem.venueid = eventData.venueid;
+                    eventItem.isActive = eventData.isActive;
+                    eventItem.OrgType = eventData.OrgType;
+                    eventItem.Environment = eventData.Environment;
+                    eventItem.Reason = eventData.Reason;
+                    var updateRes = await container.ReplaceItemAsync(eventItem, eventData.id, new Microsoft.Azure.Cosmos.PartitionKey(eventData.id));
+
+
+                    if (updateRes.StatusCode == HttpStatusCode.OK)
+                    {
+                        await UploadFile(eventItem.id, attachments);
+                    }
+
+                }
+                else
+                {
+                    return new NotFoundResult();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.LogError(ex.ToString());
+                throw ex;
+            }
+
+            return new OkObjectResult(eventViewModelData.createModel);
+        }
+
 
 
         [FunctionName("Gets")]
@@ -105,6 +177,19 @@ namespace EventAzureFunction
 
                 if (events.Count > 0)
                 {
+                    foreach (var item in events)
+                    {
+                        if (item.photos == null)
+                        {
+                            continue;
+                        }
+
+                        for (int i = 0; i < item.photos.Count; i++)
+                        {
+                            item.photos[i] = $"https://samediaojjwsyddev.blob.core.windows.net/imagescontainer/events/{item.id}/{item.photos[i]}";
+                        }
+                    }
+
                     return new OkObjectResult(events);
                 }
                 else
@@ -133,6 +218,14 @@ namespace EventAzureFunction
                 ItemResponse<Event> response = await container.ReadItemAsync<Event>(id, new Microsoft.Azure.Cosmos.PartitionKey(id));
                 if (response != null && response.Resource != null && response.Resource.id != Guid.Empty.ToString())
                 {
+                    if (response.Resource.photos != null)
+                    {
+                        for (int i = 0; i < response.Resource.photos.Count; i++)
+                        {
+                            response.Resource.photos[i] = $"https://samediaojjwsyddev.blob.core.windows.net/imagescontainer/events/{response.Resource.id}/{response.Resource.photos[i]}";
+                        }
+                    }
+
                     return new OkObjectResult(response.Resource);
                 }
                 else
@@ -162,7 +255,7 @@ namespace EventAzureFunction
                 try
                 {
                     //Not doing hard delete
-                    var response = await container.DeleteItemAsync<Event>("id", new Microsoft.Azure.Cosmos.PartitionKey(id));
+                    //var response = await container.DeleteItemAsync<Event>("id", new Microsoft.Azure.Cosmos.PartitionKey(id));
 
                     ItemResponse<Event> res = await container.ReadItemAsync<Event>(id, new Microsoft.Azure.Cosmos.PartitionKey(id));
                     //Get Existing Item
@@ -192,51 +285,6 @@ namespace EventAzureFunction
             return new OkResult();
         }
 
-        [FunctionName("put")]
-        [OpenApiOperation(operationId: "put", tags: new[] { "Update Record operation" })]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Event), Description = "Parameters", Required = true)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(Event), Description = "Returns a 200 response with text")]
-        public async Task<IActionResult> Update(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "event")] HttpRequest req, ILogger log)
-        {
-            Event eventData = new();
-            try
-            {
-                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                eventData = JsonConvert.DeserializeObject<Event>(requestBody);
-                var container = ContainerClient();
-                ItemResponse<Event> res = await container.ReadItemAsync<Event>(eventData.id, new Microsoft.Azure.Cosmos.PartitionKey(eventData.id));
-                //Get Existing Item
-                var eventItem = res.Resource;
-                if (eventItem != null && eventItem.id != Guid.Empty.ToString())
-                {
-                    //Replace existing item values with new values
-                    eventItem.name = eventData.name;
-                    eventItem.date = eventData.date;
-                    eventItem.timeopen = eventData.timeopen;
-                    eventItem.timeclose = eventData.timeclose;
-                    eventItem.description= eventData.description;
-                    eventItem.photos = eventData.photos;
-                    eventItem.type = eventData.type;
-                    eventItem.state = eventData.state;
-                    eventItem.genere = eventData.genere;
-                    eventItem.venueid = eventData.venueid;
-                    eventItem.isActive = eventData.isActive;
-                    var updateRes = await container.ReplaceItemAsync(eventItem, eventData.id, new Microsoft.Azure.Cosmos.PartitionKey(eventData.id));
-                }
-                else
-                {
-                    return new NotFoundResult();
-                }
-            }
-            catch (Exception ex)
-            {
-                log.LogError(ex.ToString());
-                throw ex;
-            }
-
-            return new OkObjectResult(eventData);
-        }
 
         [FunctionName("FileUpload")]
         public static async Task<IActionResult> Run(
@@ -260,17 +308,18 @@ namespace EventAzureFunction
             return new OkObjectResult("file uploaded successfylly");
         }
 
-        private async Task  UploadFile(string id, List<AttachmentModel> Attachments)
+        private async Task UploadFile(string id, List<AttachmentModel> Attachments)
         {
             string Connection = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
             string containerName = Environment.GetEnvironmentVariable("ContainerName");
 
             foreach (var item in Attachments)
             {
+
                 Stream myBlob = new MemoryStream(item.Content);
                 var blobClient = new BlobContainerClient(Connection, containerName);
                 var blob = blobClient.GetBlobClient($"events/{id}/{item.FileName}");
-                await blob.UploadAsync(myBlob);
+                await blob.UploadAsync(myBlob, overwrite: true);
             }
         }
     }
