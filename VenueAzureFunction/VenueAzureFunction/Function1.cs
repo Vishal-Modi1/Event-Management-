@@ -46,20 +46,27 @@ namespace VenueAzureFunction
 
         [FunctionName("Create")]
         [OpenApiOperation(operationId: "Create", tags: new[] { "Create record operation" })]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Venue), Description = "Parameters", Required = true)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(VenueViewModel), Description = "Parameters", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(Venue), Description = "Returns a 200 response with text")]
         public async Task<IActionResult> Create(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "venue")] HttpRequest req, ILogger log)
         {
-            Venue venueData = new();
+            VenueViewModel venueViewModel = new();
+            venueViewModel.createModel = new Venue();
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                venueData = JsonConvert.DeserializeObject<Venue>(requestBody);
+                venueViewModel = JsonConvert.DeserializeObject<VenueViewModel>(requestBody);
                 var container = ContainerClient();
-                venueData.id = Guid.NewGuid().ToString();
-                venueData.isActive = true;
-                ItemResponse<Venue> venueResponse = await container.CreateItemAsync<Venue>(venueData, new Microsoft.Azure.Cosmos.PartitionKey(venueData.id));
+                venueViewModel.createModel.id = Guid.NewGuid().ToString();
+                venueViewModel.createModel.isActive = true;
+                var attachments = venueViewModel.attachmentModels;
+                ItemResponse<Venue> venueResponse = await container.CreateItemAsync<Venue>(venueViewModel.createModel, new Microsoft.Azure.Cosmos.PartitionKey(venueViewModel.createModel.id));
+
+                if (venueResponse.StatusCode == HttpStatusCode.Created)
+                {
+                    await UploadFile(venueViewModel.createModel.id, attachments);
+                }
             }
             catch (Exception ex)
             {
@@ -67,9 +74,66 @@ namespace VenueAzureFunction
                 throw ex;
             }
 
-            return new OkObjectResult(venueData);
+            return new OkObjectResult(venueViewModel.createModel);
         }
 
+        [FunctionName("put")]
+        [OpenApiOperation(operationId: "put", tags: new[] { "Update Record operation" })]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(VenueViewModel), Description = "Parameters", Required = true)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(Venue), Description = "Returns a 200 response with text")]
+        public async Task<IActionResult> Update(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "venue")] HttpRequest req, ILogger log)
+        {
+            VenueViewModel venueViewModel = new();
+            venueViewModel.createModel = new();
+            try
+            {
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                venueViewModel = JsonConvert.DeserializeObject<VenueViewModel>(requestBody);
+                var container = ContainerClient();
+                ItemResponse<Venue> res = await container.ReadItemAsync<Venue>(venueViewModel.createModel.id, new Microsoft.Azure.Cosmos.PartitionKey(venueViewModel.createModel.id));
+                //Get Existing Item
+                var venueItem = res.Resource;
+                if (venueItem != null && venueItem.id != Guid.Empty.ToString())
+                {
+                    //Replace existing item values with new values
+                    venueItem.name = venueViewModel.createModel.name;
+                    venueItem.phone = venueViewModel.createModel.phone;
+                    venueItem.url = venueViewModel.createModel.url;
+                    venueItem.address = venueViewModel.createModel.address;
+                   
+                    var attachments = venueViewModel.attachmentModels;
+
+                    if (venueViewModel.createModel.photos != null)
+                    {
+                        venueItem.photos = new List<string>();
+                        for (int i = 0; i < venueViewModel.createModel.photos.Count; i++)
+                        {
+                            venueItem.photos.Add(System.IO.Path.GetFileName(venueViewModel.createModel.photos[i]));
+                        }
+
+                    }
+                    venueItem.isActive = venueViewModel.createModel.isActive;
+                    var updateRes = await container.ReplaceItemAsync(venueItem, venueViewModel.createModel.id, new Microsoft.Azure.Cosmos.PartitionKey(venueViewModel.createModel.id));
+
+                    if (updateRes.StatusCode == HttpStatusCode.OK)
+                    {
+                        await UploadFile(venueItem.id, attachments);
+                    }
+                }
+                else
+                {
+                    return new NotFoundResult();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.LogError(ex.ToString());
+                throw ex;
+            }
+
+            return new OkObjectResult(venueViewModel.createModel);
+        }
 
         [FunctionName("Gets")]
         [OpenApiOperation(operationId: "Gets", tags: new[] { "get all record operation" })]
@@ -107,6 +171,19 @@ namespace VenueAzureFunction
 
                 if (venues.Count > 0)
                 {
+                    foreach (var item in venues)
+                    {
+                        if (item.photos == null)
+                        {
+                            continue;
+                        }
+
+                        for (int i = 0; i < item.photos.Count; i++)
+                        {
+                            item.photos[i] = $"https://samediaojjwsyddev.blob.core.windows.net/imagescontainer/venues/{item.id}/{item.photos[i]}";
+                        }
+                    }
+
                     return new OkObjectResult(venues);
                 }
                 else
@@ -135,6 +212,14 @@ namespace VenueAzureFunction
                 ItemResponse<Venue> response = await container.ReadItemAsync<Venue>(id, new Microsoft.Azure.Cosmos.PartitionKey(id));
                 if (response != null && response.Resource != null && response.Resource.id != Guid.Empty.ToString())
                 {
+                    if (response.Resource.photos != null)
+                    {
+                        for (int i = 0; i < response.Resource.photos.Count; i++)
+                        {
+                            response.Resource.photos[i] = $"https://samediaojjwsyddev.blob.core.windows.net/imagescontainer/venues/{response.Resource.id}/{response.Resource.photos[i]}";
+                        }
+                    }
+
                     return new OkObjectResult(response.Resource);
                 }
                 else
@@ -194,45 +279,20 @@ namespace VenueAzureFunction
             return new OkResult();
         }
 
-        [FunctionName("put")]
-        [OpenApiOperation(operationId: "put", tags: new[] { "Update Record operation" })]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Venue), Description = "Parameters", Required = true)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(Venue), Description = "Returns a 200 response with text")]
-        public async Task<IActionResult> Update(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "venue")] HttpRequest req, ILogger log)
+        
+        private async Task UploadFile(string id, List<AttachmentModel> Attachments)
         {
-            Venue venueData = new();
-            try
-            {
-                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                venueData = JsonConvert.DeserializeObject<Venue>(requestBody);
-                var container = ContainerClient();
-                ItemResponse<Venue> res = await container.ReadItemAsync<Venue>(venueData.id, new Microsoft.Azure.Cosmos.PartitionKey(venueData.id));
-                //Get Existing Item
-                var venueItem = res.Resource;
-                if (venueItem != null && venueItem.id != Guid.Empty.ToString())
-                {
-                    //Replace existing item values with new values
-                    venueItem.name = venueData.name;
-                    venueItem.phone = venueData.phone;
-                    venueItem.url = venueData.url;
-                    venueItem.address = venueData.address;
-                    venueItem.photos = venueData.photos;
-                    venueItem.isActive = venueData.isActive;
-                    var updateRes = await container.ReplaceItemAsync(venueItem, venueData.id, new Microsoft.Azure.Cosmos.PartitionKey(venueData.id));
-                }
-                else
-                {
-                    return new NotFoundResult();
-                }
-            }
-            catch (Exception ex)
-            {
-                log.LogError(ex.ToString());
-                throw ex;
-            }
+            string Connection = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
+            string containerName = Environment.GetEnvironmentVariable("ContainerName");
 
-            return new OkObjectResult(venueData);
+            foreach (var item in Attachments)
+            {
+
+                Stream myBlob = new MemoryStream(item.Content);
+                var blobClient = new BlobContainerClient(Connection, containerName);
+                var blob = blobClient.GetBlobClient($"venues/{id}/{item.FileName}");
+                await blob.UploadAsync(myBlob, overwrite: true);
+            }
         }
     }
 }
