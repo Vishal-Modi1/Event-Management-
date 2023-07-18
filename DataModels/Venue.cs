@@ -25,4 +25,6 @@ namespace DataModels
         public List<string> photos { get; set; }
         public bool isActive { get; set; }
     }
+
+    
 }

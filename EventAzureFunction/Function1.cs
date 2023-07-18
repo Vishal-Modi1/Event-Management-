@@ -17,13 +17,15 @@ using Newtonsoft.Json;
 using Microsoft.Azure.Cosmos;
 using Container = Microsoft.Azure.Cosmos.Container;
 using MCMWebApp.Model.DataModel;
+using Azure.Storage.Blobs;
+using DataModels;
 
 namespace EventAzureFunction
 {
     public class Function1
     {
         private string CosmosDBAccountUri = "https://cdb-accmainsite-ojjw-syddev.documents.azure.com:443/";
-        private string CosmosDBAccountPrimaryKey = "";
+        private string CosmosDBAccountPrimaryKey = "UppkypN5jqpt7roOoasDnfcY7htbZ5hl566HfImndtXLdhW70rndiAtgL42CmztEinI5xaV0xdqaACDbYTzCaw==";
         private string CosmosDbName = "db_evefesven";
         private string CosmosDbContainerEvent = "new_events";
         private readonly ILogger<Function1> _logger;
@@ -46,20 +48,27 @@ namespace EventAzureFunction
 
         [FunctionName("Create")]
         [OpenApiOperation(operationId: "Create", tags: new[] { "Create record operation" })]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Event), Description = "Parameters", Required = true)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventViewModel), Description = "Parameters", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(Event), Description = "Returns a 200 response with text")]
         public async Task<IActionResult> Create(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "event")] HttpRequest req, ILogger log)
         {
-            Event eventData = new();
+            EventViewModel eventData = new();
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                eventData = JsonConvert.DeserializeObject<Event>(requestBody);
+                eventData = JsonConvert.DeserializeObject<EventViewModel>(requestBody);
                 var container = ContainerClient();
-                eventData.id = Guid.NewGuid().ToString();
-                eventData.isActive = true;
-                ItemResponse<Event> eventResponse = await container.CreateItemAsync<Event>(eventData, new Microsoft.Azure.Cosmos.PartitionKey(eventData.id));
+                eventData.createModel.id = Guid.NewGuid().ToString();
+                eventData.createModel.isActive = true;
+                var attachments = eventData.attachmentModels;
+                ItemResponse<Event> eventResponse = await container.CreateItemAsync<Event>(eventData.createModel, new Microsoft.Azure.Cosmos.PartitionKey(eventData.createModel.id));
+           
+                if(eventResponse.StatusCode == HttpStatusCode.Created)
+                {
+                    await UploadFile(eventData.createModel.id, attachments);
+                }
+            
             }
             catch (Exception ex)
             {
@@ -153,7 +162,7 @@ namespace EventAzureFunction
                 try
                 {
                     //Not doing hard delete
-                    //var response = await container.DeleteItemAsync<Event>("id", new Microsoft.Azure.Cosmos.PartitionKey(id));
+                    var response = await container.DeleteItemAsync<Event>("id", new Microsoft.Azure.Cosmos.PartitionKey(id));
 
                     ItemResponse<Event> res = await container.ReadItemAsync<Event>(id, new Microsoft.Azure.Cosmos.PartitionKey(id));
                     //Get Existing Item
@@ -227,6 +236,42 @@ namespace EventAzureFunction
             }
 
             return new OkObjectResult(eventData);
+        }
+
+        [FunctionName("FileUpload")]
+        public static async Task<IActionResult> Run(
+             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req, ILogger log)
+        {
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var eventData = JsonConvert.DeserializeObject<ImagesModel>(requestBody);
+
+            string Connection = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
+            string containerName = Environment.GetEnvironmentVariable("ContainerName");
+
+            foreach (var item in eventData.Attachments)
+            {
+                Stream myBlob = new MemoryStream(item.Content);
+                var blobClient = new BlobContainerClient(Connection, containerName);
+                var blob = blobClient.GetBlobClient($"{eventData.Id.ToString()}/{item.FileName}");
+                await blob.UploadAsync(myBlob);
+            }
+
+            return new OkObjectResult("file uploaded successfylly");
+        }
+
+        private async Task  UploadFile(string id, List<AttachmentModel> Attachments)
+        {
+            string Connection = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
+            string containerName = Environment.GetEnvironmentVariable("ContainerName");
+
+            foreach (var item in Attachments)
+            {
+                Stream myBlob = new MemoryStream(item.Content);
+                var blobClient = new BlobContainerClient(Connection, containerName);
+                var blob = blobClient.GetBlobClient($"events/{id}/{item.FileName}");
+                await blob.UploadAsync(myBlob);
+            }
         }
     }
 }

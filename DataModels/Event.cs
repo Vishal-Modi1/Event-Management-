@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DataModels;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
@@ -64,6 +65,5 @@ namespace MCMWebApp.Model.DataModel
         public string Reason { get; set; }
         [Required]
         public string OrgType { get; set; }
-
     }
 }
