@@ -5,16 +5,16 @@
             <MudContainer>
                 <MudGrid>
                     <MudItem lg="6" md="6" xs="12">
-                        <MudTextField @bind-Value="EditModel.name" Label="Name" Variant="Variant.Outlined" For="@(() => EditModel.name)"></MudTextField>
+                        <MudTextField Margin="Margin.Dense" @bind-Value="EditModel.name" Label="Name" Variant="Variant.Outlined" For="@(() => EditModel.name)"></MudTextField>
                     </MudItem>
                     <MudItem lg="6" md="6" xs="12">
-                        <MudTextField @bind-Value="EditModel.phone" Label="Phone" Variant="Variant.Outlined" For="@(() => EditModel.phone)"></MudTextField>
+                        <MudTextField Margin="Margin.Dense" @bind-Value="EditModel.phone" Label="Phone" Variant="Variant.Outlined" For="@(() => EditModel.phone)"></MudTextField>
                     </MudItem>
                     <MudItem lg="6" md="6" xs="12">
-                        <MudTextField @bind-Value="EditModel.url" Label="Url" Variant="Variant.Outlined" For="@(() => EditModel.url)"></MudTextField>
+                        <MudTextField Margin="Margin.Dense" @bind-Value="EditModel.url" Label="Url" Variant="Variant.Outlined" For="@(() => EditModel.url)"></MudTextField>
                     </MudItem>
                     <MudItem lg="6" md="6" xs="12">
-                        <MudTextField T="string" Class="m-0" Label="Address" Variant="Variant.Outlined" @bind-Text="EditModel.address" Lines="5" />
+                        <MudTextField Margin="Margin.Dense" T="string" Class="m-0" Label="Address" Variant="Variant.Outlined" @bind-Text="EditModel.address" Lines="5" />
                     </MudItem>
                     <MudItem lg="6" md="6" xs="12">
                         <MudItem lg="12" md="12" xs="12">

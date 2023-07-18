@@ -7,22 +7,22 @@
 {
     if (!string.IsNullOrEmpty(AdornmentIcon))
     {
-        <MudDatePicker AdornmentIcon="@AdornmentIcon" data-tc-auto="@TestDataAttribute" Adornment="@Adornment" Variant="@Variant" Class="@Class" Style="@Style" Date="@Value" DateChanged="@ValueChangeHandler" />
+        <MudDatePicker Margin="Margin.Dense" AdornmentIcon="@AdornmentIcon" data-tc-auto="@TestDataAttribute" Adornment="@Adornment" Variant="@Variant" Class="@Class" Style="@Style" Date="@Value" DateChanged="@ValueChangeHandler" />
     }
     else
     {
-        <MudDatePicker Adornment="@Adornment" data-tc-auto="@TestDataAttribute" Variant="@Variant" Class="@Class" Style="@Style" Date="@Value" DateChanged="@ValueChangeHandler" />
+        <MudDatePicker Margin="Margin.Dense" Adornment="@Adornment" data-tc-auto="@TestDataAttribute" Variant="@Variant" Class="@Class" Style="@Style" Date="@Value" DateChanged="@ValueChangeHandler" />
     }
 }
 else
 {
     if (!string.IsNullOrEmpty(AdornmentIcon))
     {
-        <MudDatePicker AdornmentIcon="@AdornmentIcon" data-tc-auto="@TestDataAttribute" Adornment="@Adornment" Label="@PlaceHolder" Variant="@Variant" Class="@Class" Style="@Style" Date="@Value" DateChanged="@ValueChangeHandler" />
+        <MudDatePicker Margin="Margin.Dense" AdornmentIcon="@AdornmentIcon" data-tc-auto="@TestDataAttribute" Adornment="@Adornment" Label="@PlaceHolder" Variant="@Variant" Class="@Class" Style="@Style" Date="@Value" DateChanged="@ValueChangeHandler" />
     }
     else
     {
-        <MudDatePicker Adornment="@Adornment" data-tc-auto="@TestDataAttribute" Label="@PlaceHolder" Variant="@Variant" Class="@Class" Style="@Style" Date="@Value" DateChanged="@ValueChangeHandler" />
+        <MudDatePicker Margin="Margin.Dense" Adornment="@Adornment" data-tc-auto="@TestDataAttribute" Label="@PlaceHolder" Variant="@Variant" Class="@Class" Style="@Style" Date="@Value" DateChanged="@ValueChangeHandler" />
     }
 }
 

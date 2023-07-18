@@ -11,6 +11,10 @@ namespace MCMWebApp.Pages.EventDetails
 
         [Parameter]
         public EventCallback<Event> OnValidSubmit { get; set; }
+
+        [Parameter]
+        public List<Venue> VenueList { get; set; }
+
         [Inject] ISnackbar Snackbar { get; set; }
         public bool isDisabled { get; set; } = false;
 

@@ -9,7 +9,7 @@
 {
     @if (!string.IsNullOrEmpty(PrefixMudIconName))
     {
-        <MudTextField Variant="@Variant" data-tc-auto="@TestDataAttribute" For="@For" Class="@Class" T="string" Value="@Value" Style="@Style" Immediate="@Immediate"
+        <MudTextField Margin="Margin.Dense" Variant="@Variant" data-tc-auto="@TestDataAttribute" For="@For" Class="@Class" T="string" Value="@Value" Style="@Style" Immediate="@Immediate"
               ValueChanged="@ValueChangeHandler" TextChanged="ValueChangeHandler"
               Adornment="Adornment.Start" AdornmentIcon="@PrefixMudIconName"></MudTextField>
     }
@@ -17,11 +17,11 @@
     {
         if (InputType == InputType.Password)
         {
-            <MudTextField Style="@Style" data-tc-auto="@TestDataAttribute" Variant="@Variant" InputType="@InputType" For="@For" Immediate="@Immediate" Class="@Class" T="string" Value="@Value" ValueChanged="@(ValueChangeHandler)"></MudTextField>
+            <MudTextField Margin="Margin.Dense" Style="@Style" data-tc-auto="@TestDataAttribute" Variant="@Variant" InputType="@InputType" For="@For" Immediate="@Immediate" Class="@Class" T="string" Value="@Value" ValueChanged="@(ValueChangeHandler)"></MudTextField>
         }
         else
         {
-            <MudTextField Style="@Style" data-tc-auto="@TestDataAttribute" Variant="@Variant" For="@For" Disabled="@Disabled" Immediate="@Immediate" Class="@Class" T="string" Value="@Value" ValueChanged="@(ValueChangeHandler)"></MudTextField>
+            <MudTextField Margin="Margin.Dense" Style="@Style" data-tc-auto="@TestDataAttribute" Variant="@Variant" For="@For" Disabled="@Disabled" Immediate="@Immediate" Class="@Class" T="string" Value="@Value" ValueChanged="@(ValueChangeHandler)"></MudTextField>
         }
     }
 }
@@ -29,7 +29,7 @@ else
 {
     @if (!string.IsNullOrEmpty(PrefixMudIconName))
     {
-        <MudTextField Style="@Style" data-tc-auto="@TestDataAttribute" Variant="@Variant" For="@For" Class="@Class" T="string" Value="@Value"
+        <MudTextField Margin="Margin.Dense" Style="@Style" data-tc-auto="@TestDataAttribute" Variant="@Variant" For="@For" Class="@Class" T="string" Value="@Value"
               ValueChanged="@ValueChangeHandler" TextChanged="ValueChangeHandler" Label="@PlaceHolder"
               Adornment="Adornment.Start" AdornmentIcon="@PrefixMudIconName"></MudTextField>
     }
@@ -37,11 +37,11 @@ else
     {
         if (InputType == InputType.Password)
         {
-            <MudTextField Style="@Style" data-tc-auto="@TestDataAttribute" Variant="@Variant" For="@For" InputType="@InputType" Label="@PlaceHolder" Immediate="@Immediate" Class="@Class" T="string" Value="@Value" ValueChanged="@(ValueChangeHandler)"></MudTextField>
+            <MudTextField Margin="Margin.Dense" Style="@Style" data-tc-auto="@TestDataAttribute" Variant="@Variant" For="@For" InputType="@InputType" Label="@PlaceHolder" Immediate="@Immediate" Class="@Class" T="string" Value="@Value" ValueChanged="@(ValueChangeHandler)"></MudTextField>
         }
         else
         {
-            <MudTextField Style="@Style" data-tc-auto="@TestDataAttribute" Variant="@Variant" For="@For" Label="@PlaceHolder" Disabled="@Disabled" Immediate="@Immediate" Class="@Class" T="string" Value="@Value" ValueChanged="@(ValueChangeHandler)"></MudTextField>
+            <MudTextField Margin="Margin.Dense" Style="@Style" data-tc-auto="@TestDataAttribute" Variant="@Variant" For="@For" Label="@PlaceHolder" Disabled="@Disabled" Immediate="@Immediate" Class="@Class" T="string" Value="@Value" ValueChanged="@(ValueChangeHandler)"></MudTextField>
         }
 
     }

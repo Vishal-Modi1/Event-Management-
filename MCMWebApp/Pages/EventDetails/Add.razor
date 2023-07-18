@@ -1,53 +1,102 @@
-﻿<EditForm Model="@createModel" OnValidSubmit="ValidSubmit">
+﻿@using MCMWebApp.Model.DataModel;
+<EditForm Model="@createModel" OnValidSubmit="ValidSubmit">
     <DataAnnotationsValidator />
     <MudDialog @bind-IsVisible="visible">
         <DialogContent>
             <MudContainer>
                 <MudGrid>
                     <MudItem lg="6" md="6" xs="12">
-                        <MudTextField @bind-Value="createModel.name" Label="Name" Variant="Variant.Outlined" For="@(() => createModel.name)"></MudTextField>
+                        <MudTextField Margin="Margin.Dense" @bind-Value="createModel.name" Label="Name" Variant="Variant.Outlined" For="@(() => createModel.name)"></MudTextField>
                     </MudItem>
-                    <MudItem lg="6" md="6" xs="12">
-                        <MudTextField @bind-Value="createModel.type" Label="Event Type" Variant="Variant.Outlined" For="@(() => createModel.type)"></MudTextField>
+                    <MudItem lg="3" md="3" xs="12">
+                        <MudTextField Margin="Margin.Dense" @bind-Value="createModel.type" Label="Event Type" Variant="Variant.Outlined" For="@(() => createModel.type)"></MudTextField>
                     </MudItem>
-                    <MudItem lg="4" md="4" xs="4">
-                        <MudDatePicker Label="Date" @bind-Date="createModel.date" DateFormat="dd.MM.yyyy" PickerVariant="PickerVariant.Dialog" />
+                    <MudItem lg="3" md="3" xs="12">
+                        <MudSelect Margin="Margin.Dense" @bind-Value="createModel.venueid" T="string" Label="Venue" Variant="Variant.Outlined" Required Placeholder="Select Venue">
+                            @foreach (Venue item in VenueList)
+                            {
+                                <MudSelectItem Margin="Margin.Dense" Item Value="@item.id.ToString()">@item.name</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <ValidationMessage For=@( () => createModel.venueid) />
                     </MudItem>
-                    <MudItem lg="4" md="4" xs="4">
-                        <MudTimePicker Label="Time open" AmPm="true" @bind-Time="createModel.timeopen" PickerVariant="PickerVariant.Dialog" />
+                    <MudItem lg="2" md="2" xs="12">
+                        <MudDatePicker Margin="Margin.Dense" Label="Date" @bind-Date="createModel.date" DateFormat="dd.MM.yyyy" PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" />
+                        <ValidationMessage For=@( () => createModel.date) />
                     </MudItem>
-                    <MudItem lg="4" md="4" xs="4">
-                        <MudTimePicker Label="Time close" AmPm="true" @bind-Time="createModel.timeclose" PickerVariant="PickerVariant.Dialog" />
+                    <MudItem lg="2" md="2" xs="12">
+                        <MudTimePicker Margin="Margin.Dense" Label="Time open" AmPm="true" @bind-Time="createModel.timeopen" PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" />
+                        <ValidationMessage For=@( () => createModel.timeopen) />
                     </MudItem>
-                    <MudItem lg="3" md="3" xs="6">
-                        <MudTextField @bind-Value="createModel.state" Label="State" Variant="Variant.Outlined" For="@(() => createModel.state)"></MudTextField>
+                    <MudItem lg="2" md="2" xs="12">
+                        <MudTimePicker Margin="Margin.Dense" Label="Time close" AmPm="true" @bind-Time="createModel.timeclose" PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" />
+                        <ValidationMessage For=@( () => createModel.timeclose) />
                     </MudItem>
-                    <MudItem lg="3" md="3" xs="6">
-                        <MudTextField @bind-Value="createModel.genere" Label="Genere" Variant="Variant.Outlined" For="@(() => createModel.genere)"></MudTextField>
+                    <MudItem lg="2" md="2" xs="12">
+                        <MudTextField Margin="Margin.Dense" @bind-Value="createModel.state" Label="State" Variant="Variant.Outlined" For="@(() => createModel.state)" />
                     </MudItem>
-                    <MudItem lg="6" md="6" xs="12">
-                        <MudTextField T="string" Class="m-0" Label="Description" Variant="Variant.Outlined" @bind-Value="createModel.description" Lines="5" />
+                    <MudItem lg="2" md="2" xs="12">
+                        <MudTextField Margin="Margin.Dense" @bind-Value="createModel.genere" Label="Genere" Variant="Variant.Outlined" For="@(() => createModel.genere)" />
                     </MudItem>
-                    <MudItem lg="6" md="6" xs="12">
-                        <MudItem lg="12" md="12" xs="12">
-                            <MudText>
-                                Photos(5):
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small">
-                                    <FontLabel Fontweight="500" FontColor="white">Add</FontLabel>
-                                </MudButton>
-                            </MudText>
-                        </MudItem>
-                        <MudItem lg="12" md="12" xs="12" Class="py-2">
-                            <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                            <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                            <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                            <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                            <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                        </MudItem>
+                    <MudItem lg="2" md="2" xs="12">
+                        <MudTextField Margin="Margin.Dense" @bind-Value="createModel.orgtype" Label="Organization Type" Variant="Variant.Outlined" For="@(() => createModel.orgtype)" />
+                    </MudItem>
+                    <MudItem lg="12" md="12" xs="6">
+                        <MudTextField Margin="Margin.Dense" T="string" Class="m-0" Label="Description" Variant="Variant.Outlined" @bind-Value="createModel.description" Lines="3" />
+                    </MudItem>
+                    <MudItem lg="12" md="12" xs="12">
+                        <MudExpansionPanels>
+                            <MudExpansionPanel Text="Event Score" IsInitiallyExpanded="true">
+                                <MudGrid>
+                                    <MudItem lg="3" md="3" xs="6">
+                                        <MudTextField Margin="Margin.Dense" @bind-Value="createModel.environment" Label="Environment" Variant="Variant.Outlined" For="@(() => createModel.environment)"></MudTextField>
+                                    </MudItem>
+                                    <MudItem lg="3" md="3" xs="6">
+                                        <MudTextField Margin="Margin.Dense" @bind-Value="createModel.music" Label="Music" Variant="Variant.Outlined" For="@(() => createModel.music)"></MudTextField>
+                                    </MudItem>
+                                    <MudItem lg="3" md="3" xs="6">
+                                        <MudTextField Margin="Margin.Dense" @bind-Value="createModel.drinks" Label="Drinks" Variant="Variant.Outlined" For="@(() => createModel.drinks)"></MudTextField>
+                                    </MudItem>
+                                    <MudItem lg="3" md="3" xs="6">
+                                        <MudTextField Margin="Margin.Dense" @bind-Value="createModel.cost" Label="Cost" Variant="Variant.Outlined" For="@(() => createModel.cost)"></MudTextField>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudExpansionPanel>
+                            <MudExpansionPanel Text="Recommended" IsInitiallyExpanded="true">
+                                <MudGrid>
+                                    <MudItem lg="3" md="3" xs="12">
+                                        <MudTextField Margin="Margin.Dense" @bind-Value="createModel.position" Label="Position" Variant="Variant.Outlined" For="@(() => createModel.position)"></MudTextField>
+                                    </MudItem>
+                                    <MudItem lg="9" md="9" xs="12">
+                                        <MudTextField Margin="Margin.Dense" T="string" Class="m-0" Label="Reason" Variant="Variant.Outlined" @bind-Value="createModel.reason" For="@(() => createModel.reason)" Lines="3" />
+                                    </MudItem>
+                                </MudGrid>
+                            </MudExpansionPanel>
+                            <MudExpansionPanel Text="Photos" IsInitiallyExpanded="true">
+                                <MudItem lg="6" md="6" xs="12">
+                                    <MudItem lg="12" md="12" xs="12">
+                                        <MudText>
+                                            Add Photo:
+                                            <span class="mx-2">
+                                                <MudIconButton HtmlTag="label" for="fileInput" Icon="@Icons.Material.Filled.AttachFile" Color="Color.Primary">Attachment</MudIconButton>
+                                                <InputFile id="fileInput" OnChange="AttachFiles" hidden multiple />
+                                            </span>
+                                        </MudText>
+                                    </MudItem>
+                                    <MudItem lg="12" md="12" xs="12" Class="py-2">
+                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
+                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
+                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
+                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
+                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
+                                    </MudItem>
+                                </MudItem>
+                            </MudExpansionPanel>
+                        </MudExpansionPanels>
                     </MudItem>
                     <MudItem Class="d-flex justify-end my-2" xs="12">
                         <MudButton Color="Color.Primary" ButtonType="ButtonType.Submit" Variant="Variant.Filled"
-                            Disabled="isDisabled">
+                                   Disabled="isDisabled">
                             @if (isDisabled)
                             {
                                 <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />

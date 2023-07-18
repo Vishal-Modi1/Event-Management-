@@ -14,6 +14,7 @@ namespace MCMWebApp.Pages.Venues
     {
         private string AzureFunctionBaseURL = "http://localhost:7151/";
         private string searchString1 = "";
+        private bool _loading = false;
         private Venue selectedItem1 = null;
         private HashSet<Venue> selectedItems = new HashSet<Venue>();
         private List<Venue> Venues = new List<Venue>();
@@ -216,10 +217,12 @@ namespace MCMWebApp.Pages.Venues
         {
             try
             {
+                _loading = true;
                 var venueResponse = await HttpClient.GetFromJsonAsync<IEnumerable<Venue>>("api/venue");
                 if (venueResponse is not null && venueResponse.Any())
                 {
                     Venues = venueResponse.ToList();
+                    _loading = false;
                 }
             }
             catch (Exception ex)

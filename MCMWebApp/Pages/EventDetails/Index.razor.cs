@@ -8,104 +8,14 @@ namespace MCMWebApp.Pages.EventDetails
 {
     public partial class Index
     {
-        //private string searchString1 = "";
-        //private Event selectedItem1 = null;
-        //private HashSet<Event> selectedItems = new HashSet<Event>();
-        //private List<Event> Events = new List<Event>();
-
-        //private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
-        //{
-        //    new BreadcrumbItem("Dashboard", href: "/", icon: Icons.Material.Filled.Home),
-        //    new BreadcrumbItem("Events", href: "/events", disabled: true,icon: @Icons.Material.Filled.Event),
-        //};
-
-        //protected override async Task OnInitializedAsync()
-        //{
-        //    //Need to call Azure function
-        //    //Events = await httpClient.GetFromJsonAsync<List<Event>>("webapi");
-
-        //    for (int i = 0; i < 50; i++)
-        //    {
-        //        Event newObj = new Event
-        //        {
-        //            id = Guid.NewGuid(),
-        //            name = "Event name -- " + (i + 1),
-        //            description = "This is Description info " + (i + 1)
-        //        };
-
-        //        Events.Add(newObj);
-        //    }
-        //}
-
-        //private bool FilterFunc1(Event eventdata) => FilterFunc(eventdata, searchString1);
-
-        //private bool FilterFunc(Event eventdata, string searchString)
-        //{
-        //    if (string.IsNullOrWhiteSpace(searchString))
-        //        return true;
-
-        //    if (eventdata.name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        //        return true;
-        //    return false;
-        //}
-
-
-        //private void OpenDialog(Event eventdata)
-        //{
-
-        //    var parameters = new DialogParameters();
-        //    parameters.Add("eventdata", eventdata);
-        //    //parameters.Add("_parameters", _parameters);
-        //    var options = new DialogOptions()
-        //    {
-        //        // CloseOnEscapeKey = false,
-        //        CloseButton = true,
-        //        MaxWidth = MaxWidth.Large,
-        //        Position = DialogPosition.Center,
-        //        DisableBackdropClick = true
-
-        //    };
-
-        //    DialogService.Show<Edit>("Edit Event", parameters, options);
-
-        //}
-        //private void OpenDialogAdd()
-        //{
-        //    var options = new DialogOptions
-        //    {
-        //        // CloseOnEscapeKey = false,
-        //        CloseButton = true,
-        //        MaxWidth = MaxWidth.Large,
-        //        Position = DialogPosition.Center,
-        //        DisableBackdropClick = true
-
-        //    };
-        //    DialogService.Show<Add>("Add Event", options);
-        //}
-        //private void DeleteUser()
-        //{
-        //    var parameters = new DialogParameters();
-        //    parameters.Add("ContentText", "Do you want to confirm?");
-        //    parameters.Add("ButtonText", "Yes");
-        //    var options = new DialogOptions
-        //    {
-        //        // CloseOnEscapeKey = false,
-        //        CloseButton = true,
-        //        MaxWidth = MaxWidth.ExtraLarge,
-        //        Position = DialogPosition.Center,
-        //        DisableBackdropClick = true
-
-        //    };
-        //    var dialogresult = DialogService.Show<Confirm>("Confirm", parameters, options);
-        //}
-
-
-        //
         private string AzureFunctionBaseURL = "http://localhost:7265/";
+        private string VenueAzureFunctionBaseURL = "http://localhost:7151/";
         private string searchString1 = "";
+        private bool _loading = false;
         private Event selectedItem1 = null;
         private HashSet<Event> selectedItems = new HashSet<Event>();
         private List<Event> Events = new List<Event>();
+        private List<Venue> VenueList  = new List<Venue>();
         IDialogReference dialogresult;
         [Inject] HttpClient HttpClient { get; set; }
         [Inject] ISnackbar Snackbar { get; set; }
@@ -121,10 +31,10 @@ namespace MCMWebApp.Pages.EventDetails
         {
             try
             {
-                HttpClient.BaseAddress = new Uri(AzureFunctionBaseURL);
                 Events = new();
                 //Call to Azure function URL
                 await RefreshGrid();
+                await FetchVenueList();
             }
             catch (Exception ex)
             {
@@ -152,12 +62,18 @@ namespace MCMWebApp.Pages.EventDetails
             }
         }
 
-        private void OpenDialogAdd()
+        private async Task OpenDialogAdd()
         {
             try
             {
+                if (VenueList is null || VenueList is not null && !VenueList.Any())
+                {
+                    await FetchVenueList();
+                }
+
                 var parameters = new DialogParameters();
                 parameters.Add("OnValidSubmit", EventCallback.Factory.Create<Event>(this, OnCreateValidSubmit));
+                parameters.Add("VenueList", VenueList);
                 var options = new DialogOptions
                 {
                     // CloseOnEscapeKey = false,
@@ -175,14 +91,20 @@ namespace MCMWebApp.Pages.EventDetails
             }
         }
 
-        private void OpenEditDialog(Event eventdata)
+        private async Task OpenEditDialog(Event eventdata)
         {
             try
             {
                 if (Events.Any(x => x.id == eventdata.id))
                 {
+                    if (VenueList is null || VenueList is not null && !VenueList.Any())
+                    {
+                        await FetchVenueList();
+                    }
+
                     var parameters = new DialogParameters();
                     parameters.Add("EditModel", eventdata);
+                    parameters.Add("VenueList", VenueList);
                     parameters.Add("OnValidSubmit", EventCallback.Factory.Create<Event>(this, OnUpdateValidSubmit));
                     var options = new DialogOptions()
                     {
@@ -236,7 +158,7 @@ namespace MCMWebApp.Pages.EventDetails
         {
             try
             {
-                var eventResponse = await HttpClient.PostAsJsonAsync("api/event", createModel);
+                var eventResponse = await HttpClient.PostAsJsonAsync(string.Concat(AzureFunctionBaseURL, "api/event"), createModel);
                 if (eventResponse != null && eventResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Created successfully.", Severity.Success);
@@ -259,7 +181,7 @@ namespace MCMWebApp.Pages.EventDetails
         {
             try
             {
-                var eventResponse = await HttpClient.PutAsJsonAsync("api/event", editModel);
+                var eventResponse = await HttpClient.PutAsJsonAsync(string.Concat(AzureFunctionBaseURL, "api/event"), editModel);
                 if (eventResponse != null && eventResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Update successfully.", Severity.Success);
@@ -282,7 +204,7 @@ namespace MCMWebApp.Pages.EventDetails
         {
             try
             {
-                var httpResponse = await HttpClient.DeleteAsync($"api/event/{editModelId}");
+                var httpResponse = await HttpClient.DeleteAsync(string.Concat(AzureFunctionBaseURL, $"api/event/{editModelId}"));
                 if (httpResponse != null && httpResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Deleted successfully.", Severity.Success);
@@ -305,10 +227,29 @@ namespace MCMWebApp.Pages.EventDetails
         {
             try
             {
-                var eventResponse = await HttpClient.GetFromJsonAsync<IEnumerable<Event>>("api/event");
+                _loading = true;
+                var eventResponse = await HttpClient.GetFromJsonAsync<IEnumerable<Event>>(string.Concat(AzureFunctionBaseURL, "api/event"));
                 if (eventResponse is not null && eventResponse.Any())
                 {
                     Events = eventResponse.ToList();
+                    _loading = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add(ex.Message, Severity.Error);
+            }
+        }
+
+        private async Task FetchVenueList()
+        {
+            try
+            {
+                VenueList = new();
+                var venueResponse = await HttpClient.GetFromJsonAsync<IEnumerable<Venue>>(string.Concat(VenueAzureFunctionBaseURL, "api/venue"));
+                if (venueResponse is not null && venueResponse.Any())
+                {
+                    VenueList = venueResponse.OrderBy(x => x.name).ToList();
                 }
             }
             catch (Exception ex)

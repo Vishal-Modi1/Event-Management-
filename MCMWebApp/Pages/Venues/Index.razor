@@ -7,17 +7,19 @@
         <FontLabel Fontweight="500" FontColor="white">Add</FontLabel>
     </MudButton>
 </MudItem>
-<MudTable Items="@Venues" Dense="true" Hover="true" Striped="true" Filter="new Func<Venue,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+<MudTable Items="@Venues" Loading="@_loading" Dense="true" Hover="true" Striped="true" Filter="new Func<Venue,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudText Typo="Typo.h6">Venues</MudText>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField Margin="Margin.Dense" @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh></MudTh>
-        <MudTh>id</MudTh>
-        <MudTh>name</MudTh>
-        <MudTh>description</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Phone</MudTh>
+        <MudTh>Address</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>Photos</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>
@@ -26,11 +28,22 @@
             </MudIconButton>
             <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" @onclick="@(() => Delete(context))" />
         </MudTd>
-        <MudTd DataLabel="id">@context.id</MudTd>
-        <MudTd DataLabel="name">@context.name</MudTd>
-        <MudTd DataLabel="description">@context.url</MudTd>
-    </RowTemplate>
-    <PagerContent>
-        <MudTablePager />
-    </PagerContent>
-</MudTable>
+        <MudTd DataLabel="Name">@context.name</MudTd>
+        <MudTd DataLabel="Phone">@context.phone</MudTd>
+        <MudTd DataLabel="Address">
+            @(!string.IsNullOrEmpty(context.address) && context.address.Length > 15 ? string.Concat(context.address.Substring(0, 15), "...") : context.address)
+        </MudTd>
+        <MudTd DataLabel="Description">@context.url</MudTd>
+        <MudTd DataLabel="Photos">
+            @for (int i = 0; i < 10; i++)
+            {
+                <MudAvatar Rounded="true" Class="mr-1 mb-1">
+                    <MudImage Src="https://mudblazor.com/images/sweden.jpg"></MudImage>
+                </MudAvatar>
+            }
+        </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
