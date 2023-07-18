@@ -10,8 +10,8 @@ namespace MCMWebApp1.Pages.EventDetails
 {
     public partial class Index
     {
-        private string AzureFunctionBaseURL = "http://localhost:7265/";
-        private string VenueAzureFunctionBaseURL = "http://localhost:7151/";
+        [Inject] IConfiguration Configuration { get; set; }
+
         private string searchString1 = "";
         private bool _loading = false;
         private Event selectedItem1 = null;
@@ -165,7 +165,7 @@ namespace MCMWebApp1.Pages.EventDetails
                 viewModel.createModel.photos = attachmentModels.Select(p => p.FileName).ToList();
                 viewModel.attachmentModels = attachmentModels;
 
-                var eventResponse = await HttpClient.PostAsJsonAsync(string.Concat(AzureFunctionBaseURL, "api/event"), viewModel);
+                var eventResponse = await HttpClient.PostAsJsonAsync(string.Concat(Configuration["AzureFunctionEventBaseURL"], "api/event"), viewModel);
                 if (eventResponse != null && eventResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Created successfully.", Severity.Success);
@@ -204,7 +204,7 @@ namespace MCMWebApp1.Pages.EventDetails
                 
                 viewModel.attachmentModels = attachmentModels;
 
-                var eventResponse = await HttpClient.PutAsJsonAsync(string.Concat(AzureFunctionBaseURL, "api/event"), viewModel);
+                var eventResponse = await HttpClient.PutAsJsonAsync(string.Concat(Configuration["AzureFunctionEventBaseURL"], "api/event"), viewModel);
                 if (eventResponse != null && eventResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Update successfully.", Severity.Success);
@@ -227,7 +227,7 @@ namespace MCMWebApp1.Pages.EventDetails
         {
             try
             {
-                var httpResponse = await HttpClient.DeleteAsync(string.Concat(AzureFunctionBaseURL, $"api/event/{editModelId}"));
+                var httpResponse = await HttpClient.DeleteAsync(string.Concat(Configuration["AzureFunctionEventBaseURL"], $"api/event/{editModelId}"));
                 if (httpResponse != null && httpResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Deleted successfully.", Severity.Success);
@@ -251,7 +251,7 @@ namespace MCMWebApp1.Pages.EventDetails
             try
             {
                 _loading = true;
-                var eventResponse = await HttpClient.GetFromJsonAsync<IEnumerable<Event>>(string.Concat(AzureFunctionBaseURL, "api/event"));
+                var eventResponse = await HttpClient.GetFromJsonAsync<IEnumerable<Event>>(string.Concat(@Configuration["AzureFunctionEventBaseURL"], "api/event"));
                 if (eventResponse is not null && eventResponse.Any())
                 {
                     Events = eventResponse.ToList();
@@ -270,7 +270,7 @@ namespace MCMWebApp1.Pages.EventDetails
             try
             {
                 VenueList = new();
-                var venueResponse = await HttpClient.GetFromJsonAsync<IEnumerable<Venue>>(string.Concat(VenueAzureFunctionBaseURL, "api/venue"));
+                var venueResponse = await HttpClient.GetFromJsonAsync<IEnumerable<Venue>>(string.Concat(Configuration["AzureFunctionVenueBaseURL"], "api/venue"));
                 if (venueResponse is not null && venueResponse.Any())
                 {
                     VenueList = venueResponse.OrderBy(x => x.name).ToList();

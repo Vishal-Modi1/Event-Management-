@@ -12,7 +12,8 @@ namespace MCMWebApp1.Pages.Venues
 {
     public partial class Index
     {
-        private string AzureFunctionBaseURL = "http://localhost:7151/";
+        //private string AzureFunctionBaseURL = "http://localhost:7151/";
+        [Inject] IConfiguration Configuration { get; set; }
         private string searchString1 = "";
         private bool _loading = false;
         private Venue selectedItem1 = null;
@@ -34,7 +35,7 @@ namespace MCMWebApp1.Pages.Venues
         {
             try
             {
-                HttpClient.BaseAddress = new Uri(AzureFunctionBaseURL);
+                HttpClient.BaseAddress = new Uri(Configuration["AzureFunctionVenueBaseURL"]);
                 Venues = new();
                 //Call to Azure function URL
                 await RefreshGrid();
