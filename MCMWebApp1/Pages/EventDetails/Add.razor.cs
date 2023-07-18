@@ -59,28 +59,24 @@ namespace MCMWebApp1.Pages.EventDetails
 
         #region FileAttachment
 
-        private async Task<string> UploadFile(UploadBlobRequestDto uploadBlobRequestDto)
-        {
-            //Logger.LogDebug("Upload Files In");
-            try
-            {
-                //BlobDto result = await AzureBlobService.SaveBlobAsync(uploadBlobRequestDto, ContainerEnum.EVENT);
-                //Logger.LogDebug("Upload Files out");
-                return null;
-                //return result.Uri;
-            }
-            catch (Exception ex)
-            {
-                Snackbar.Add("Error while uploading file", Severity.Error);
-                //Logger.LogDebug(ex.Message, ex);
-            }
+        //private async Task<string> UploadFile(UploadBlobRequestDto uploadBlobRequestDto)
+        //{
+        //    try
+        //    {
+        //        return null;
+        //        //return result.Uri;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Snackbar.Add("Error while uploading file", Severity.Error);
+        //        //Logger.LogDebug(ex.Message, ex);
+        //    }
 
-            return string.Empty;
-        }
+        //    return string.Empty;
+        //}
 
         private async Task AttachFiles(InputFileChangeEventArgs e)
         {
-            //Logger.LogDebug("Attach Files in");
             try
             {
                 newlyAttachedFiles = e.GetMultipleFiles();
@@ -124,36 +120,36 @@ namespace MCMWebApp1.Pages.EventDetails
             }
         }
 
-        private async Task<List<AttachmentModel>> SendAttachments()
-        {
-            if (uploadAttachmentList != null && uploadAttachmentList.Any())
-            {
-                bool showMaxFileSizeError = false;
-                for (int i = 0; i < uploadAttachmentList.Count(); i++)
-                {
-                    var file = uploadAttachmentList[i];
+        //private async Task<List<AttachmentModel>> SendAttachments()
+        //{
+        //    if (uploadAttachmentList != null && uploadAttachmentList.Any())
+        //    {
+        //        bool showMaxFileSizeError = false;
+        //        for (int i = 0; i < uploadAttachmentList.Count(); i++)
+        //        {
+        //            var file = uploadAttachmentList[i];
 
-                    string fileURL = await UploadFile(new UploadBlobRequestDto
-                    {
-                        Content = file.Content,
-                        Name = file.FileName,
-                        ContentType = file.ContentType
-                    });
+        //            string fileURL = await UploadFile(new UploadBlobRequestDto
+        //            {
+        //                Content = file.Content,
+        //                Name = file.FileName,
+        //                ContentType = file.ContentType
+        //            });
 
-                    if (!string.IsNullOrEmpty(fileURL))
-                    {
-                        createModel.photos.Add(fileURL);
-                    }
-                }
+        //            if (!string.IsNullOrEmpty(fileURL))
+        //            {
+        //                createModel.photos.Add(fileURL);
+        //            }
+        //        }
 
-                if (showMaxFileSizeError)
-                {
-                    Snackbar.Add("The maximum file size for the attachment is 8 MB.", Severity.Error);
-                }
-            }
+        //        if (showMaxFileSizeError)
+        //        {
+        //            Snackbar.Add("The maximum file size for the attachment is 8 MB.", Severity.Error);
+        //        }
+        //    }
 
-            return uploadAttachmentList;
-        }
+        //    return uploadAttachmentList;
+        //}
         #endregion
     }
 }

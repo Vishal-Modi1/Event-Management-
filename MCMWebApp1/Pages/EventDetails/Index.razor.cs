@@ -107,7 +107,7 @@ namespace MCMWebApp1.Pages.EventDetails
                     var parameters = new DialogParameters();
                     parameters.Add("EditModel", eventdata);
                     parameters.Add("VenueList", VenueList);
-                    parameters.Add("OnValidSubmit", EventCallback.Factory.Create<Event>(this, OnUpdateValidSubmit));
+                    parameters.Add("OnValidSubmit", EventCallback.Factory.Create<(Event, List<AttachmentModel>)>(this, (args) => OnUpdateValidSubmit(args.Item1, args.Item2)));
                     var options = new DialogOptions()
                     {
                         CloseOnEscapeKey = false,
@@ -185,11 +185,26 @@ namespace MCMWebApp1.Pages.EventDetails
             }
         }
 
-        private async Task OnUpdateValidSubmit(Event editModel)
+        private async Task OnUpdateValidSubmit(Event editModel, List<AttachmentModel> attachmentModels)
         {
             try
             {
-                var eventResponse = await HttpClient.PutAsJsonAsync(string.Concat(AzureFunctionBaseURL, "api/event"), editModel);
+                EventViewModel viewModel = new EventViewModel();
+                viewModel.createModel = editModel;
+
+                if(viewModel.createModel.photos == null)
+                {
+                    viewModel.createModel.photos = new List<string>();
+                }
+
+                foreach (var attachmentModel in attachmentModels)
+                {
+                    viewModel.createModel.photos.Add(attachmentModel.FileName);
+                }
+                
+                viewModel.attachmentModels = attachmentModels;
+
+                var eventResponse = await HttpClient.PutAsJsonAsync(string.Concat(AzureFunctionBaseURL, "api/event"), viewModel);
                 if (eventResponse != null && eventResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Update successfully.", Severity.Success);
@@ -241,20 +256,6 @@ namespace MCMWebApp1.Pages.EventDetails
                 {
                     Events = eventResponse.ToList();
 
-                    foreach (var item in Events)
-                    {
-                        if(item.photos == null)
-                        {
-                            continue;
-                        }
-
-                        for (int i = 0; i < item.photos.Count(); i++)
-                        {
-                            item.photos[i] = $"https://samediaojjwsyddev.blob.core.windows.net/imagescontainer/events/{item.id}/{item.photos[i]}";
-                        }
-                        
-                       
-                    }
                     _loading = false;
                 }
             }

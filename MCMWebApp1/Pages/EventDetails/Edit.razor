@@ -1,7 +1,7 @@
 ﻿@using MCMWebApp.Model.DataModel;
 <EditForm Model="@EditModel" OnValidSubmit="ValidSubmit">
     <DataAnnotationsValidator />
-    <MudDialog >
+    <MudDialog>
         <DialogContent>
             <MudContainer>
                 <MudGrid>
@@ -79,16 +79,28 @@
                                             Add Photo:
                                             <span class="mx-2">
                                                 <MudIconButton HtmlTag="label" for="fileInput" Icon="@Icons.Material.Filled.AttachFile" Color="Color.Primary">Attachment</MudIconButton>
-                                                @*<InputFile id="fileInput" OnChange="AttachFiles" hidden multiple />*@
+                                                <InputFile id="fileInput" OnChange="AttachFiles" hidden multiple />
                                             </span>
                                         </MudText>
                                     </MudItem>
                                     <MudItem lg="12" md="12" xs="12" Class="py-2">
-                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
+
+                                       @* @if (EditModel.photos != null)
+                                        {
+                                            for (int i = 0; i < EditModel.photos.Count; i++)
+                                            {
+                                                 <img height="50px" width="50px" class="mr-1 mb-1" src="@EditModel.photos[i]" />
+                                            }
+                                        }*@
+
+                                        @if (newlyAttachedFiles is not null && uploadAttachmentList.Any())
+                                        {
+                                            @foreach (var imgData in uploadAttachmentList)
+                                            {
+                                                <img height="50px" width="50px" class="mr-1 mb-1" src="data:image;base64,@System.Convert.ToBase64String(imgData.Content)" />
+                                            }
+                                        }
+
                                     </MudItem>
                                 </MudItem>
                             </MudExpansionPanel>

@@ -86,11 +86,16 @@
                                         </MudText>
                                     </MudItem>
                                     <MudItem lg="12" md="12" xs="12" Class="py-2">
-                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
-                                        <img src="https://mudblazor.com/images/sweden.jpg" height="100" width="100" alt="Mony the dog" class="rounded-lg" />
+
+                                        @if (uploadAttachmentList is not null && uploadAttachmentList.Any())
+                                        {
+                                            @foreach (var imgData in uploadAttachmentList)
+                                            {
+                                                <img height="50px" width="50px" class="mr-1 mb-1"   src="data:image;base64,@System.Convert.ToBase64String(imgData.Content)" />
+                                            }
+                                        }
+
+                                      
                                     </MudItem>
                                 </MudItem>
                             </MudExpansionPanel>
