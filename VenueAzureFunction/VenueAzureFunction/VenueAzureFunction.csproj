@@ -13,6 +13,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.17.0" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.35.1" />
     <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.20.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="1.0.0" />

@@ -16,6 +16,7 @@ using DataModels;
 using Microsoft.Extensions.Configuration;
 using Container = Microsoft.Azure.Cosmos.Container;
 using System.Configuration;
+using Azure.Storage.Blobs;
 
 namespace VenueAzureFunction
 {
