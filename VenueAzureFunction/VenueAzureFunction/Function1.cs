@@ -22,10 +22,10 @@ namespace VenueAzureFunction
 {
     public class Function1
     {
-        private string CosmosDBAccountUri = "https://cdb-accmainsite-ojjw-syddev.documents.azure.com:443/";
+        private string CosmosDBAccountUri = Environment.GetEnvironmentVariable("CosmosDBAccountUri");
         private string CosmosDBAccountPrimaryKey = "UppkypN5jqpt7roOoasDnfcY7htbZ5hl566HfImndtXLdhW70rndiAtgL42CmztEinI5xaV0xdqaACDbYTzCaw==";
-        private string CosmosDbName = "db_evefesven";
-        private string CosmosDbContainerVenue = "new_venues";
+        private string CosmosDbName = Environment.GetEnvironmentVariable("CosmosDbName");
+        private string CosmosDbContainerVenue = Environment.GetEnvironmentVariable("CosmosDbContainerVenue");
         private readonly ILogger<Function1> _logger;
 
         public Function1(ILogger<Function1> log, IConfiguration configuration)
@@ -180,7 +180,7 @@ namespace VenueAzureFunction
 
                         for (int i = 0; i < item.photos.Count; i++)
                         {
-                            item.photos[i] = $"https://samediaojjwsyddev.blob.core.windows.net/imagescontainer/venues/{item.id}/{item.photos[i]}";
+                            item.photos[i] = $"{Environment.GetEnvironmentVariable("VenuesImageContainer")}/{item.id}/{item.photos[i]}";
                         }
                     }
 
@@ -216,7 +216,7 @@ namespace VenueAzureFunction
                     {
                         for (int i = 0; i < response.Resource.photos.Count; i++)
                         {
-                            response.Resource.photos[i] = $"https://samediaojjwsyddev.blob.core.windows.net/imagescontainer/venues/{response.Resource.id}/{response.Resource.photos[i]}";
+                            response.Resource.photos[i] = $"{Environment.GetEnvironmentVariable("VenuesImageContainer")}/{response.Resource.id}/{response.Resource.photos[i]}";
                         }
                     }
 
