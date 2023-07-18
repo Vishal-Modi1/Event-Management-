@@ -1,0 +1,79 @@
+﻿@if (!string.IsNullOrEmpty(Label))
+{
+    <CustomControlLabel>@Label</CustomControlLabel>
+}
+
+@if (string.IsNullOrEmpty(PlaceHolder))
+{
+    if (!string.IsNullOrEmpty(AdornmentIcon))
+    {
+        <MudDatePicker Margin="Margin.Dense" AdornmentIcon="@AdornmentIcon" data-tc-auto="@TestDataAttribute" Adornment="@Adornment" Variant="@Variant" Class="@Class" Style="@Style" Date="@Value" DateChanged="@ValueChangeHandler" />
+    }
+    else
+    {
+        <MudDatePicker Margin="Margin.Dense" Adornment="@Adornment" data-tc-auto="@TestDataAttribute" Variant="@Variant" Class="@Class" Style="@Style" Date="@Value" DateChanged="@ValueChangeHandler" />
+    }
+}
+else
+{
+    if (!string.IsNullOrEmpty(AdornmentIcon))
+    {
+        <MudDatePicker Margin="Margin.Dense" AdornmentIcon="@AdornmentIcon" data-tc-auto="@TestDataAttribute" Adornment="@Adornment" Label="@PlaceHolder" Variant="@Variant" Class="@Class" Style="@Style" Date="@Value" DateChanged="@ValueChangeHandler" />
+    }
+    else
+    {
+        <MudDatePicker Margin="Margin.Dense" Adornment="@Adornment" data-tc-auto="@TestDataAttribute" Label="@PlaceHolder" Variant="@Variant" Class="@Class" Style="@Style" Date="@Value" DateChanged="@ValueChangeHandler" />
+    }
+}
+
+@code {
+    [Parameter]
+    public EventCallback<DateTime?> ValueChangedCallBack { get; set; }
+
+    [Parameter]
+    public Variant Variant { get; set; }
+
+    [Parameter]
+    public string Class { get; set; }
+
+    [Parameter]
+    public string TestDataAttribute { get; set; } = "-";
+
+    [Parameter]
+    public string Label { get; set; }
+
+    [Parameter]
+    public DateTime? Value { get; set; }
+
+    [Parameter]
+    public string PlaceHolder { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public Adornment Adornment { get; set; }
+
+    [Parameter]
+    public string AdornmentIcon { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime?> Date { get; set; }
+
+    private void ValueChangeHandler(DateTime? value)
+    {
+        if (value != null)
+        {
+            DateTime _value = Convert.ToDateTime(value);
+            Value = _value;
+            ValueChangedCallBack.InvokeAsync(_value);
+            return;
+        }
+        else
+        {
+            Value = null;
+            ValueChangedCallBack.InvokeAsync(null);
+            return;
+        }
+    }
+}

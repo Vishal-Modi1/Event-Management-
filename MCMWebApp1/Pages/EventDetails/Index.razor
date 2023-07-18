@@ -1,0 +1,53 @@
+﻿@page "/events"
+@using MCMWebApp.Model.DataModel;
+
+<MudBreadcrumbs Items="_items"></MudBreadcrumbs>
+<MudItem Class="d-flex justify-end my-2">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small" @onclick="@(async () => await OpenDialogAdd())">
+        <FontLabel Fontweight="500" FontColor="white">Add</FontLabel>
+    </MudButton>
+</MudItem>
+<MudTable Loading="@_loading" Items="@Events" Dense="true" Hover="true" Striped="true" Filter="new Func<Event,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Events</MudText>
+        <MudSpacer />
+        <MudTextField Margin="Margin.Dense" @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh></MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTd>Date</MudTd>
+        <MudTd>Time Open</MudTd>
+        <MudTd>Time Close</MudTd>
+        <MudTh>Photos</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>
+            <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small"
+                           @onclick="@(async () => await OpenEditDialog(context))">edit</MudIconButton>
+            <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" @onclick="@(() => Delete(context))" />
+        </MudTd>
+        <MudTd DataLabel="Name">@context.name</MudTd>
+        <MudTd DataLabel="Description">@context.description</MudTd>
+        <MudTd DataLabel="Date">@(context.date.HasValue ? context.date.Value.ToString("yyyy-MM-dd") : "-")</MudTd>
+            <MudTd DataLabel="Time Open">@(context.timeopen != null && context.timeopen.HasValue ? context.timeopen.Value : "-")</MudTd>
+            <MudTd DataLabel="Time Close">@(context.timeclose != null && context.timeclose.HasValue ? context.timeclose.Value : "-")</MudTd>
+        <MudTd DataLabel="Photos">
+
+            @if (context.photos != null)
+            {
+                for (int i = 0; i < context.photos.Count; i++)
+                {
+                    <MudImage Src="@context.photos[i]" Class="mr-1 mb-1" Style="height:50px;width:50px"></MudImage>
+                }
+            }
+           
+
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
