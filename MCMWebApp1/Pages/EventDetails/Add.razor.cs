@@ -30,7 +30,6 @@ namespace MCMWebApp1.Pages.EventDetails
         
         
         #region File Attachment
-        //private TicketAttachmentModel ticketAttachmentModel = new TicketAttachmentModel();
         private IReadOnlyList<IBrowserFile> newlyAttachedFiles { get; set; }
         private List<IBrowserFile> newlyAttachedFileList { get; set; } = new List<IBrowserFile>();
         private List<AttachmentModel> uploadAttachmentList = new List<AttachmentModel>();

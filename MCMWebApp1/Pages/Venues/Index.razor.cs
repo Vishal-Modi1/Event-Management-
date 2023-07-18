@@ -70,7 +70,7 @@ namespace MCMWebApp1.Pages.Venues
             try
             {
                 var parameters = new DialogParameters();
-                parameters.Add("OnValidSubmit", EventCallback.Factory.Create<Venue>(this, OnCreateValidSubmit));
+                parameters.Add("OnValidSubmit", EventCallback.Factory.Create<(Venue, List<AttachmentModel>)>(this, (args) => OnCreateValidSubmit(args.Item1, args.Item2)));
                 var options = new DialogOptions
                 {
                     // CloseOnEscapeKey = false,
@@ -96,7 +96,7 @@ namespace MCMWebApp1.Pages.Venues
                 {
                     var parameters = new DialogParameters();
                     parameters.Add("EditModel", venuedata);
-                    parameters.Add("OnValidSubmit", EventCallback.Factory.Create<Venue>(this, OnUpdateValidSubmit));
+                    parameters.Add("OnValidSubmit", EventCallback.Factory.Create<(Venue, List<AttachmentModel>)>(this, (args) => OnUpdateValidSubmit(args.Item1, args.Item2)));
                     var options = new DialogOptions()
                     {
                         CloseOnEscapeKey = false,
@@ -145,11 +145,16 @@ namespace MCMWebApp1.Pages.Venues
             }
         }
 
-        private async Task OnCreateValidSubmit(Venue createModel)
+        private async Task OnCreateValidSubmit(Venue createModel, List<AttachmentModel> attachmentModels)
         {
             try
             {
-                var venueResponse = await HttpClient.PostAsJsonAsync("api/venue", createModel);
+                VenueViewModel viewModel = new VenueViewModel();
+                viewModel.createModel = createModel;
+                viewModel.createModel.photos = attachmentModels.Select(p => p.FileName).ToList();
+                viewModel.attachmentModels = attachmentModels;
+
+                var venueResponse = await HttpClient.PostAsJsonAsync("api/venue", viewModel);
                 if (venueResponse != null && venueResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Created successfully.", Severity.Success);
@@ -168,11 +173,26 @@ namespace MCMWebApp1.Pages.Venues
             }
         }
 
-        private async Task OnUpdateValidSubmit(Venue editModel)
+        private async Task OnUpdateValidSubmit(Venue editModel, List<AttachmentModel> attachmentModels)
         {
             try
             {
-                var venueResponse = await HttpClient.PutAsJsonAsync("api/venue", editModel);
+                VenueViewModel viewModel = new VenueViewModel();
+                viewModel.createModel = editModel;
+
+                if (viewModel.createModel.photos == null)
+                {
+                    viewModel.createModel.photos = new List<string>();
+                }
+
+                foreach (var attachmentModel in attachmentModels)
+                {
+                    viewModel.createModel.photos.Add(attachmentModel.FileName);
+                }
+
+                viewModel.attachmentModels = attachmentModels;
+
+                var venueResponse = await HttpClient.PutAsJsonAsync("api/venue", viewModel);
                 if (venueResponse != null && venueResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Update successfully.", Severity.Success);
