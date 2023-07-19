@@ -124,9 +124,9 @@ namespace EventAzureFunction
                     eventItem.genere = eventData.genere;
                     eventItem.venueid = eventData.venueid;
                     eventItem.isActive = eventData.isActive;
-                    eventItem.OrgType = eventData.OrgType;
-                    eventItem.Environment = eventData.Environment;
-                    eventItem.Reason = eventData.Reason;
+                    eventItem.orgtype = eventData.orgtype;
+                    eventItem.environment = eventData.environment;
+                    eventItem.reason = eventData.reason;
                     var updateRes = await container.ReplaceItemAsync(eventItem, eventData.id, new Microsoft.Azure.Cosmos.PartitionKey(eventData.id));
 
 
@@ -245,7 +245,7 @@ namespace EventAzureFunction
         [OpenApiOperation(operationId: "Delete", tags: new[] { "Delete record operation" })]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(Event), Description = "Returns a 200 response with text")]
         public async Task<IActionResult> Delete(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "event/{id}")] HttpRequest req, ILogger log)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "event")] HttpRequest req, ILogger log)
         {
             try
             {

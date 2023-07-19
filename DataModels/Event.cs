@@ -43,27 +43,27 @@ namespace MCMWebApp.Model.DataModel
         public bool isActive { get; set; }
 
         [Required]
-        [MaxLength(500)]
-        public string? Environment { get; set; }
+        [Range(0, 10, ErrorMessage = "Environment rating must be between 0 to 10")]
+        public int? environment { get; set; } = 0;
 
         [Required]
         [Range(0, 10, ErrorMessage = "Music rating must be between 0 to 10")]
-        public int? Music { get; set; } = 0;
+        public int? music { get; set; } = 0;
 
         [Required]
         [Range(0, 10, ErrorMessage = "Drinks rating must be between 0 to 10")]
-        public int? Drinks { get; set; } = 0;
+        public int? drinks { get; set; } = 0;
 
         [Required]
         [Range(0, 10, ErrorMessage = "Drinks rating must be between 0 to 10")]
-        public int? Cost { get; set; } = 0;
+        public int? cost { get; set; } = 0;
 
         [Required]
         [Range(0, 10, ErrorMessage = "Position must be between 0 to 10")]
-        public int? Position { get; set; } = 0;
+        public int? position { get; set; } = 0;
         [Required]
-        public string Reason { get; set; }
+        public string reason { get; set; }
         [Required]
-        public string OrgType { get; set; }
+        public string orgtype { get; set; }
     }
 }
