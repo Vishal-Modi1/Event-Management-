@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MCMWebApp.Model", "MCMWebApp.Model\MCMWebApp.Model.csproj", "{59FC0ED4-70D4-4A6B-8FA2-39BC7FC438BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCMWebApp1", "MCMWebApp1\MCMWebApp1.csproj", "{A52BF442-D13C-49F5-8BE2-ABBED6A47D4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MCMWebApp1", "MCMWebApp1\MCMWebApp1.csproj", "{A52BF442-D13C-49F5-8BE2-ABBED6A47D4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
