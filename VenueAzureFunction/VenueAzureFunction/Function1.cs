@@ -239,7 +239,7 @@ namespace VenueAzureFunction
         [OpenApiOperation(operationId: "Delete", tags: new[] { "Delete record operation" })]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(Venue), Description = "Returns a 200 response with text")]
         public async Task<IActionResult> Delete(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "venue/{id}")] HttpRequest req, ILogger log)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "venue")] HttpRequest req, ILogger log)
         {
             try
             {
