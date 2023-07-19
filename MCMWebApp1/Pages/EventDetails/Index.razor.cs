@@ -36,7 +36,7 @@ namespace MCMWebApp1.Pages.EventDetails
                 Events = new();
                 //Call to Azure function URL
                 await RefreshGrid();
-                await FetchVenueList();
+                //await FetchVenueList();
             }
             catch (Exception ex)
             {
@@ -213,7 +213,7 @@ namespace MCMWebApp1.Pages.EventDetails
                 }
                 else
                 {
-                    Snackbar.Add("Update failed.", Severity.Success);
+                    Snackbar.Add("Update failed.", Severity.Error);
                 }
             }
             catch (Exception ex)
@@ -227,16 +227,17 @@ namespace MCMWebApp1.Pages.EventDetails
         {
             try
             {
-                var httpResponse = await HttpClient.DeleteAsync(string.Concat(AzureFunctionBaseURL, $"api/event/{editModelId}"));
+                var httpResponse = await HttpClient.DeleteAsync(string.Concat(AzureFunctionBaseURL, $"api/event?Id={editModelId}"));
                 if (httpResponse != null && httpResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Deleted successfully.", Severity.Success);
+                    _loading = true;
                     await RefreshGrid();
                     dialogresult.Close();
                 }
                 else
                 {
-                    Snackbar.Add("Deletion failed.", Severity.Success);
+                    Snackbar.Add("Deletion failed.", Severity.Error);
                 }
             }
             catch (Exception ex)
@@ -255,7 +256,7 @@ namespace MCMWebApp1.Pages.EventDetails
                 if (eventResponse is not null && eventResponse.Any())
                 {
                     Events = eventResponse.ToList();
-
+                    StateHasChanged();
                     _loading = false;
                 }
             }

@@ -28,21 +28,21 @@ namespace MCMWebApp.Model.DataModel
 
         [Required]
         public string type { get; set; }
-        
+
         [Required]
         public string state { get; set; }
-        
+
         [Required]
         public string genere { get; set; }
-        
+
         [Required(ErrorMessage = "Please select venue")]
         public string venueid { get; set; }
 
         public bool isActive { get; set; }
 
         [Required]
-        [MaxLength(500)]
-        public string? environment { get; set; }
+        [Range(0, 10, ErrorMessage = "Environment rating must be between 0 to 10")]
+        public int? environment { get; set; } = 0;
 
         [Required]
         [Range(0, 10, ErrorMessage = "Music rating must be between 0 to 10")]
