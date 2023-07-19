@@ -39,7 +39,7 @@
             {
                 for (int i = 0; i < context.photos.Count; i++)
                 {
-                    <MudImage Src="@context.photos[i]" Class="mr-1 mb-1" Style="height:50px;width:50px"></MudImage>
+                   <img onerror="this.onerror=null;this.src='../default-venue-image.jpg'" src="@context.photos[i]" Class="mr-1 mb-1" Style="height:50px;width:50px" />
                 }
             }
         </MudTd>
