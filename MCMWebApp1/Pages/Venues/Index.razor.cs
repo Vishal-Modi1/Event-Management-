@@ -12,7 +12,6 @@ namespace MCMWebApp1.Pages.Venues
 {
     public partial class Index
     {
-        //private string AzureFunctionBaseURL = "http://localhost:7151/";
         [Inject] IConfiguration Configuration { get; set; }
         private string searchString1 = "";
         private bool _loading = false;
@@ -35,7 +34,6 @@ namespace MCMWebApp1.Pages.Venues
         {
             try
             {
-                HttpClient.BaseAddress = new Uri(Configuration["AzureFunctionVenueBaseURL"]);
                 Venues = new();
                 //Call to Azure function URL
                 await RefreshGrid();
@@ -155,7 +153,7 @@ namespace MCMWebApp1.Pages.Venues
                 viewModel.createModel.photos = attachmentModels.Select(p => p.FileName).ToList();
                 viewModel.attachmentModels = attachmentModels;
 
-                var venueResponse = await HttpClient.PostAsJsonAsync("api/venue", viewModel);
+                var venueResponse = await HttpClient.PostAsJsonAsync(String.Concat(Configuration["AzureFunctionVenueBaseURL"],"api/venue"), viewModel);
                 if (venueResponse != null && venueResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Created successfully.", Severity.Success);
@@ -193,7 +191,7 @@ namespace MCMWebApp1.Pages.Venues
 
                 viewModel.attachmentModels = attachmentModels;
 
-                var venueResponse = await HttpClient.PutAsJsonAsync("api/venue", viewModel);
+                var venueResponse = await HttpClient.PutAsJsonAsync(String.Concat(Configuration["AzureFunctionVenueBaseURL"], "api/venue"), viewModel);
                 if (venueResponse != null && venueResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Update successfully.", Severity.Success);
@@ -216,7 +214,7 @@ namespace MCMWebApp1.Pages.Venues
         {
             try
             {
-                var httpResponse = await HttpClient.DeleteAsync($"api/venue/{editModelId}");
+                var httpResponse = await HttpClient.DeleteAsync($"{@Configuration["AzureFunctionVenueBaseURL"]}api/venue/{editModelId}");
                 if (httpResponse != null && httpResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Deleted successfully.", Severity.Success);
@@ -240,7 +238,7 @@ namespace MCMWebApp1.Pages.Venues
             try
             {
                 _loading = true;
-                var venueResponse = await HttpClient.GetFromJsonAsync<IEnumerable<Venue>>("api/venue");
+                var venueResponse = await HttpClient.GetFromJsonAsync<IEnumerable<Venue>>(String.Concat(Configuration["AzureFunctionVenueBaseURL"], "api/venue"));
                 if (venueResponse is not null && venueResponse.Any())
                 {
                     Venues = venueResponse.ToList();
