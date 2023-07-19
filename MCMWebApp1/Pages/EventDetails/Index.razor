@@ -20,6 +20,13 @@
         <MudTd>Date</MudTd>
         <MudTd>Time Open</MudTd>
         <MudTd>Time Close</MudTd>
+        <MudTh>Type Event</MudTh>
+        <MudTh>Genere</MudTh>
+        <MudTh>Organizer</MudTh>
+        <MudTh>Environment</MudTh>
+        <MudTh>Music</MudTh>
+        <MudTh>Drinks</MudTh>
+        <MudTh>Cost</MudTh>
         <MudTh>Photos</MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -33,7 +40,14 @@
         <MudTd DataLabel="Date">@(context.date.HasValue ? context.date.Value.ToString("yyyy-MM-dd") : "-")</MudTd>
             <MudTd DataLabel="Time Open">@(context.timeopen != null && context.timeopen.HasValue ? context.timeopen.Value : "-")</MudTd>
             <MudTd DataLabel="Time Close">@(context.timeclose != null && context.timeclose.HasValue ? context.timeclose.Value : "-")</MudTd>
-        <MudTd DataLabel="Photos">
+            <MudTd DataLabel="Type Event">@context.type</MudTd>
+            <MudTd DataLabel="Genere">@context.genere</MudTd>
+            <MudTd DataLabel="Organizer">@context.orgtype</MudTd>
+            <MudTd DataLabel="Environment">@context.environment</MudTd>
+            <MudTd DataLabel="Music">@context.music</MudTd>
+            <MudTd DataLabel="Drinks">@context.drinks</MudTd>
+            <MudTd DataLabel="Cost">@context.cost</MudTd>
+            <MudTd DataLabel="Photos" width="15%">
 
             @if (context.photos != null)
             {

@@ -34,7 +34,7 @@
             @(!string.IsNullOrEmpty(context.address) && context.address.Length > 15 ? string.Concat(context.address.Substring(0, 15), "...") : context.address)
         </MudTd>
         <MudTd DataLabel="Description">@context.url</MudTd>
-        <MudTd DataLabel="Photos">
+        <MudTd DataLabel="Photos" width="15%">
             @if (context.photos != null)
             {
                 for (int i = 0; i < context.photos.Count; i++)
