@@ -20,6 +20,7 @@ namespace MCMWebApp1.Pages.EventDetails
 
         [Inject] ISnackbar Snackbar { get; set; }
         public bool isDisabled { get; set; } = false;
+
         private List<AttachmentModel> uploadAttachmentList = new List<AttachmentModel>();
         private IReadOnlyList<IBrowserFile> newlyAttachedFiles { get; set; }
         private List<IBrowserFile> newlyAttachedFileList { get; set; } = new List<IBrowserFile>();

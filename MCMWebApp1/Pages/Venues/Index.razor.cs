@@ -12,7 +12,7 @@ namespace MCMWebApp1.Pages.Venues
 {
     public partial class Index
     {
-        private string AzureFunctionBaseURL = "http://localhost:7151/";
+        [Inject] IConfiguration Configuration { get; set; }
         private string searchString1 = "";
         private bool _loading = false;
         private Venue selectedItem1 = null;
@@ -34,7 +34,6 @@ namespace MCMWebApp1.Pages.Venues
         {
             try
             {
-                HttpClient.BaseAddress = new Uri(AzureFunctionBaseURL);
                 Venues = new();
                 //Call to Azure function URL
                 await RefreshGrid();
@@ -70,7 +69,7 @@ namespace MCMWebApp1.Pages.Venues
             try
             {
                 var parameters = new DialogParameters();
-                parameters.Add("OnValidSubmit", EventCallback.Factory.Create<Venue>(this, OnCreateValidSubmit));
+                parameters.Add("OnValidSubmit", EventCallback.Factory.Create<(Venue, List<AttachmentModel>)>(this, (args) => OnCreateValidSubmit(args.Item1, args.Item2)));
                 var options = new DialogOptions
                 {
                     // CloseOnEscapeKey = false,
@@ -96,7 +95,7 @@ namespace MCMWebApp1.Pages.Venues
                 {
                     var parameters = new DialogParameters();
                     parameters.Add("EditModel", venuedata);
-                    parameters.Add("OnValidSubmit", EventCallback.Factory.Create<Venue>(this, OnUpdateValidSubmit));
+                    parameters.Add("OnValidSubmit", EventCallback.Factory.Create<(Venue, List<AttachmentModel>)>(this, (args) => OnUpdateValidSubmit(args.Item1, args.Item2)));
                     var options = new DialogOptions()
                     {
                         CloseOnEscapeKey = false,
@@ -145,11 +144,16 @@ namespace MCMWebApp1.Pages.Venues
             }
         }
 
-        private async Task OnCreateValidSubmit(Venue createModel)
+        private async Task OnCreateValidSubmit(Venue createModel, List<AttachmentModel> attachmentModels)
         {
             try
             {
-                var venueResponse = await HttpClient.PostAsJsonAsync("api/venue", createModel);
+                VenueViewModel viewModel = new VenueViewModel();
+                viewModel.createModel = createModel;
+                viewModel.createModel.photos = attachmentModels.Select(p => p.FileName).ToList();
+                viewModel.attachmentModels = attachmentModels;
+
+                var venueResponse = await HttpClient.PostAsJsonAsync(String.Concat(Configuration["AzureFunctionVenueBaseURL"],"api/venue"), viewModel);
                 if (venueResponse != null && venueResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Created successfully.", Severity.Success);
@@ -168,11 +172,27 @@ namespace MCMWebApp1.Pages.Venues
             }
         }
 
-        private async Task OnUpdateValidSubmit(Venue editModel)
+        private async Task OnUpdateValidSubmit(Venue editModel, List<AttachmentModel> attachmentModels)
         {
             try
             {
-                var venueResponse = await HttpClient.PutAsJsonAsync("api/venue", editModel);
+                VenueViewModel viewModel = new VenueViewModel();
+                viewModel.createModel = editModel;
+
+                if (viewModel.createModel.photos == null)
+                {
+                    viewModel.createModel.photos = new List<string>();
+                }
+
+                foreach (var attachmentModel in attachmentModels)
+                {
+                    viewModel.createModel.photos.Add(attachmentModel.FileName);
+                }
+
+                viewModel.attachmentModels = attachmentModels;
+
+               // var venueResponse = await HttpClient.PutAsJsonAsync(String.Concat(Configuration["AzureFunctionVenueBaseURL"], "api/venue"), viewModel);
+                var venueResponse = await HttpClient.PutAsJsonAsync(string.Concat(Configuration["AzureFunctionVenueBaseURL"], "api/venue"), viewModel);
                 if (venueResponse != null && venueResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Update successfully.", Severity.Success);
@@ -195,7 +215,8 @@ namespace MCMWebApp1.Pages.Venues
         {
             try
             {
-                var httpResponse = await HttpClient.DeleteAsync($"api/venue/{editModelId}");
+                //var httpResponse = await HttpClient.DeleteAsync($"{@Configuration["AzureFunctionVenueBaseURL"]}api/venue/{editModelId}");
+                var httpResponse = await HttpClient.DeleteAsync(string.Concat(Configuration["AzureFunctionVenueBaseURL"], $"api/venue?Id={editModelId}"));
                 if (httpResponse != null && httpResponse.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Deleted successfully.", Severity.Success);
@@ -219,7 +240,7 @@ namespace MCMWebApp1.Pages.Venues
             try
             {
                 _loading = true;
-                var venueResponse = await HttpClient.GetFromJsonAsync<IEnumerable<Venue>>("api/venue");
+                var venueResponse = await HttpClient.GetFromJsonAsync<IEnumerable<Venue>>(String.Concat(@Configuration["AzureFunctionVenueBaseURL"], "api/venue"));
                 if (venueResponse is not null && venueResponse.Any())
                 {
                     Venues = venueResponse.ToList();

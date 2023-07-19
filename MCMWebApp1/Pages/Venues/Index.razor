@@ -35,11 +35,12 @@
         </MudTd>
         <MudTd DataLabel="Description">@context.url</MudTd>
         <MudTd DataLabel="Photos">
-            @for (int i = 0; i < 10; i++)
+            @if (context.photos != null)
             {
-                <MudAvatar Rounded="true" Class="mr-1 mb-1">
-                    <MudImage Src="https://mudblazor.com/images/sweden.jpg"></MudImage>
-                </MudAvatar>
+                for (int i = 0; i < context.photos.Count; i++)
+                {
+                   <img onerror="this.onerror=null;this.src='../default-venue-image.jpg'" src="@context.photos[i]" Class="mr-1 mb-1" Style="height:50px;width:50px" />
+                }
             }
         </MudTd>
         </RowTemplate>
