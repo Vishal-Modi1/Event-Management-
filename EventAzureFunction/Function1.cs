@@ -99,7 +99,7 @@ namespace EventAzureFunction
                 var attachments = eventViewModelData.attachmentModels;
                 ItemResponse<Event> res = await container.ReadItemAsync<Event>(eventData.id, new Microsoft.Azure.Cosmos.PartitionKey(eventData.id));
                 //Get Existing Item
-                var eventItem = res.Resource;
+                var eventItem = res.Resource ;
                 if (eventItem != null && eventItem.id != Guid.Empty.ToString())
                 {
                     //Replace existing item values with new values
@@ -108,6 +108,7 @@ namespace EventAzureFunction
                     eventItem.timeopen = eventData.timeopen;
                     eventItem.timeclose = eventData.timeclose;
                     eventItem.description = eventData.description;
+                    eventItem.position = eventData.position;
 
                     if (eventData.photos != null)
                     {
